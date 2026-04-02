@@ -43,7 +43,11 @@ async function processMessage({ customerEmail, customerName, message, gmailThrea
   let escalated = false;
 
   // Always draft a reply — even escalated tickets get a warm acknowledgment
-  reply = await draftReply(thread, message, context, customerEmail);
+  try {
+    reply = await draftReply(thread, message, context, customerEmail);
+  } catch (err) {
+    logEvent(conversation.id, 'draft_error', { error: err.message });
+  }
 
   if (reply && gmailThreadId) {
     try {
@@ -55,13 +59,20 @@ async function processMessage({ customerEmail, customerName, message, gmailThrea
     }
   }
 
+  // Build thread snapshot for escalation emails — only include agent reply if it was sent
+  const escalationThread = [
+    ...thread,
+    { role: 'customer', content: message },
+    ...(replied ? [{ role: 'agent', content: reply }] : []),
+  ];
+
   // Fire escalations independently — both can fire on same ticket
   if (escalation.customer) {
     try {
       await sendEscalationEmail({
         to: process.env.ESCALATION_EMAIL,
         customerEmail,
-        thread: [...thread, { role: 'customer', content: message }, { role: 'agent', content: reply }],
+        thread: escalationThread,
         reason: escalation.customerReason || 'Customer escalation triggered',
         orderId,
       });
@@ -76,7 +87,7 @@ async function processMessage({ customerEmail, customerName, message, gmailThrea
       await sendEscalationEmail({
         to: process.env.FULFILLMENT_EMAIL,
         customerEmail,
-        thread: [...thread, { role: 'customer', content: message }, { role: 'agent', content: reply }],
+        thread: escalationThread,
         reason: escalation.fulfillmentReason || 'Fulfillment escalation triggered',
         orderId,
       });
@@ -106,7 +117,10 @@ async function processMessage({ customerEmail, customerName, message, gmailThrea
     confidence: classification.confidence,
     responseMs,
     orderId: orderId || null,
-    escalatedTo: escalation.customer ? 'tigertiger' : escalation.fulfillment ? 'fulfillment' : null,
+    escalatedTo: [
+      ...(escalation.customer ? ['tigertiger'] : []),
+      ...(escalation.fulfillment ? ['fulfillment'] : []),
+    ].join(',') || null,
   });
 
   return { replied, escalated, classification, responseMs };
