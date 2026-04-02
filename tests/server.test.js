@@ -27,15 +27,31 @@ initDb();
 
 const request = require('supertest');
 const app = require('../src/server');
+const { processMessage } = require('../src/pipeline');
 
 describe('POST /webhook', () => {
-  test('returns 200 with received status', async () => {
+  beforeEach(() => {
+    processMessage.mockClear();
+  });
+
+  test('returns 200 with received status and calls processMessage with correct args', async () => {
     const res = await request(app)
       .post('/webhook')
       .send({ customerEmail: 'test@test.com', customerName: 'Test', message: 'Hello' });
 
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('received');
+
+    // Give setImmediate time to fire
+    await new Promise(resolve => setImmediate(resolve));
+
+    expect(processMessage).toHaveBeenCalledWith({
+      customerEmail: 'test@test.com',
+      customerName: 'Test',
+      message: 'Hello',
+      gmailThreadId: null,
+      orderId: null,
+    });
   });
 
   test('returns 400 when customerEmail is missing', async () => {
@@ -53,8 +69,10 @@ describe('POST /webhook', () => {
 
     expect(res.status).toBe(400);
   });
+});
 
-  test('GET /health returns 200', async () => {
+describe('GET /health', () => {
+  test('returns 200', async () => {
     const res = await request(app).get('/health');
     expect(res.status).toBe(200);
   });
