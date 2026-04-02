@@ -67,7 +67,7 @@ async function processMessage({ customerEmail, customerName, message, gmailThrea
       });
       escalated = true;
     } catch (err) {
-      logEvent(conversation.id, 'escalation_error', { target: 'tigertiger', error: err.message });
+      logEvent(conversation.id, 'escalation_error', { target: 'customer', error: err.message });
     }
   }
 
