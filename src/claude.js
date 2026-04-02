@@ -69,4 +69,85 @@ async function classifyMessage(thread, newMessage) {
   }
 }
 
-module.exports = { classifyMessage };
+function buildSystemPrompt(context) {
+  const productInfo = context.products.length > 0
+    ? `\n\nCURRENT PRODUCTS:\n${context.products.map(p => `- ${p.name}: ${p.description}`).join('\n')}`
+    : '';
+
+  return `${context.systemPrompt}
+
+${HUMANIZER_INSTRUCTION}
+
+KNOWLEDGE BASE:
+${context.knowledgeBase}${productInfo}`;
+}
+
+async function draftReply(thread, newMessage, context, customerEmail) {
+  const systemPrompt = buildSystemPrompt(context);
+  const threadText = formatThreadForClassifier(thread);
+
+  const userContent = thread.length > 0
+    ? `CONVERSATION HISTORY:\n${threadText}\n\nNEW MESSAGE FROM CUSTOMER:\n${newMessage}`
+    : newMessage;
+
+  const messages = [{ role: 'user', content: userContent }];
+  const MAX_TOOL_TURNS = 5;
+
+  for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
+    const response = await getClient().messages.create({
+      model: 'claude-opus-4-6',
+      max_tokens: 1024,
+      system: systemPrompt,
+      tools: toolDefinitions,
+      messages,
+    });
+
+    if (response.stop_reason === 'end_turn') {
+      const text = response.content.find(b => b.type === 'text');
+      return text ? text.text : '';
+    }
+
+    if (response.stop_reason === 'tool_use') {
+      messages.push({ role: 'assistant', content: response.content });
+
+      const toolResults = [];
+      for (const block of response.content) {
+        if (block.type === 'tool_use') {
+          const result = await handleToolCall(block.name, block.input);
+          toolResults.push({
+            type: 'tool_result',
+            tool_use_id: block.id,
+            content: result,
+          });
+        }
+      }
+      messages.push({ role: 'user', content: toolResults });
+      continue;
+    }
+
+    // Unexpected stop reason
+    break;
+  }
+
+  return 'I am looking into this for you and will follow up shortly.';
+}
+
+async function draftFollowUp(customerFirstName, topic) {
+  const name = customerFirstName || 'there';
+  const response = await getClient().messages.create({
+    model: 'claude-opus-4-6',
+    max_tokens: 256,
+    system: `You are the Microgenix customer support agent. ${HUMANIZER_INSTRUCTION}`,
+    messages: [
+      {
+        role: 'user',
+        content: `Write a short, warm follow-up email to ${name}. Their previous support topic was: "${topic}". Check in to make sure everything was resolved and they are happy. One short paragraph only.`,
+      },
+    ],
+  });
+
+  const text = response.content.find(b => b.type === 'text');
+  return text ? text.text : `Hi ${name}, just checking in to make sure everything is going well. Let us know if you need anything.`;
+}
+
+module.exports = { classifyMessage, draftReply, draftFollowUp };

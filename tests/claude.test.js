@@ -7,7 +7,7 @@ jest.mock('@anthropic-ai/sdk', () => ({
 
 process.env.ANTHROPIC_API_KEY = 'test-key';
 
-const { classifyMessage } = require('../src/claude');
+const { classifyMessage, draftReply, draftFollowUp } = require('../src/claude');
 
 describe('classifyMessage', () => {
   beforeEach(() => mockCreate.mockClear());
@@ -63,5 +63,62 @@ describe('classifyMessage', () => {
     const result = await classifyMessage([], 'test');
     expect(result.confidence).toBe(0.5);
     expect(result.escalateCustomer).toBe(true);
+  });
+});
+
+describe('draftReply', () => {
+  beforeEach(() => mockCreate.mockClear());
+
+  test('returns a reply string', async () => {
+    mockCreate.mockResolvedValue({
+      stop_reason: 'end_turn',
+      content: [{ type: 'text', text: 'I understand your concern about the tracking. Let me look that up for you right now.' }],
+    });
+
+    const context = {
+      systemPrompt: 'You are a CS agent.',
+      knowledgeBase: '## FAQ\nShipping takes 5-7 days.',
+      products: [],
+    };
+
+    const result = await draftReply(
+      [{ role: 'customer', content: 'Where is my order?' }],
+      'Where is my order?',
+      context,
+      'jane@example.com'
+    );
+
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  test('calls API with humanizer in system prompt', async () => {
+    mockCreate.mockResolvedValue({
+      stop_reason: 'end_turn',
+      content: [{ type: 'text', text: 'Here is my reply.' }],
+    });
+
+    const context = { systemPrompt: 'Base prompt.', knowledgeBase: '', products: [] };
+    await draftReply([], 'Hi', context, 'test@test.com');
+
+    const call = mockCreate.mock.calls[0][0];
+    expect(call.system).toContain('acknowledge the customer');
+    expect(call.tools).toBeDefined();
+    expect(call.tools.length).toBe(8);
+  });
+});
+
+describe('draftFollowUp', () => {
+  beforeEach(() => mockCreate.mockClear());
+
+  test('returns a follow-up string', async () => {
+    mockCreate.mockResolvedValue({
+      stop_reason: 'end_turn',
+      content: [{ type: 'text', text: 'Just checking in to make sure everything arrived okay.' }],
+    });
+
+    const result = await draftFollowUp('Jane', 'tracking');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(10);
   });
 });
