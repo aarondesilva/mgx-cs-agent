@@ -62,17 +62,33 @@ async function pollGmail() {
   }
 }
 
-async function resolveStaleConversations() {
+function resolveStaleConversations() {
   const db = getDb();
   const fiveDaysAgo = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString();
+  const now = new Date().toISOString();
 
-  db.prepare(`
-    UPDATE conversations
-    SET status = 'resolved', resolvedAt = ?
+  // Fetch all active conversations older than 5 days that have at least one agent reply
+  const candidates = db.prepare(`
+    SELECT id, messages FROM conversations
     WHERE status = 'active'
     AND createdAt <= ?
     AND messages LIKE '%"role":"agent"%'
-  `).run(new Date().toISOString(), fiveDaysAgo);
+  `).all(fiveDaysAgo);
+
+  for (const conv of candidates) {
+    let messages;
+    try { messages = JSON.parse(conv.messages); } catch { messages = []; }
+
+    // Find the last customer message timestamp
+    const lastCustomerMsg = [...messages].reverse().find(m => m.role === 'customer');
+    const lastCustomerTs = lastCustomerMsg ? lastCustomerMsg.ts : null;
+
+    // Only resolve if the last customer reply was also more than 5 days ago
+    if (!lastCustomerTs || lastCustomerTs <= fiveDaysAgo) {
+      db.prepare("UPDATE conversations SET status = 'resolved', resolvedAt = ? WHERE id = ?")
+        .run(now, conv.id);
+    }
+  }
 }
 
 function startCronJobs() {
