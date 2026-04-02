@@ -15,6 +15,7 @@ function getDb() {
 function initDb() {
   db = new Database(DB_PATH);
   db.pragma('journal_mode = WAL');
+  db.pragma('foreign_keys = ON');
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS conversations (
@@ -50,4 +51,11 @@ function initDb() {
   return db;
 }
 
-module.exports = { getDb, initDb };
+function closeDb() {
+  if (db) {
+    db.close();
+    db = null;
+  }
+}
+
+module.exports = { getDb, initDb, closeDb };

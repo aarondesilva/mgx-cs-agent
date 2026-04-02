@@ -1,4 +1,3 @@
-const path = require('path');
 // Use an in-memory DB for tests
 process.env.DB_PATH = ':memory:';
 const { getDb, initDb } = require('../src/db');
@@ -42,5 +41,10 @@ describe('db', () => {
       .get('test@example.com');
     expect(conv.gmailThreadId).toBe('thread_abc');
     expect(conv.status).toBe('active');
+  });
+
+  afterAll(() => {
+    const { closeDb } = require('../src/db');
+    closeDb();
   });
 });
