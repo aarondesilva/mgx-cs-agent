@@ -10,14 +10,14 @@ const { markFollowUpSent, logEvent } = require('./logger');
 
 function getFollowUpsDue() {
   const db = getDb();
-  const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+  const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
 
   return db.prepare(`
     SELECT * FROM conversations
     WHERE status = 'resolved'
     AND resolvedAt <= ?
     AND followUpSentAt IS NULL
-  `).all(cutoff);
+  `).all(fortyEightHoursAgo);
 }
 
 async function sendFollowUps() {
@@ -35,10 +35,12 @@ async function sendFollowUps() {
 
       if (conv.gmailThreadId) {
         await sendReply(conv.gmailThreadId, conv.customerEmail, followUpText);
+        markFollowUpSent(conv.id);
+        logEvent(conv.id, 'follow_up', { sent: true });
+      } else {
+        // No Gmail thread — cannot send follow-up, skip without marking sent
+        logEvent(conv.id, 'follow_up', { sent: false, reason: 'no_thread_id' });
       }
-
-      markFollowUpSent(conv.id);
-      logEvent(conv.id, 'follow_up', { sent: true });
     } catch (err) {
       logEvent(conv.id, 'follow_up_error', { error: err.message });
     }
@@ -67,23 +69,25 @@ function resolveStaleConversations() {
   const fiveDaysAgo = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString();
   const now = new Date().toISOString();
 
-  // Fetch all active conversations older than 5 days that have at least one agent reply
+  // Fetch all active conversations older than 5 days; check agent reply in JS to avoid fragile LIKE
   const candidates = db.prepare(`
     SELECT id, messages FROM conversations
     WHERE status = 'active'
     AND createdAt <= ?
-    AND messages LIKE '%"role":"agent"%'
   `).all(fiveDaysAgo);
 
   for (const conv of candidates) {
     let messages;
     try { messages = JSON.parse(conv.messages); } catch { messages = []; }
 
-    // Find the last customer message timestamp
+    // Only resolve if the conversation has at least one agent reply
+    const hasAgentReply = messages.some(m => m.role === 'agent');
+    if (!hasAgentReply) continue;
+
+    // Only resolve if the last customer reply was also more than 5 days ago
     const lastCustomerMsg = [...messages].reverse().find(m => m.role === 'customer');
     const lastCustomerTs = lastCustomerMsg ? lastCustomerMsg.ts : null;
 
-    // Only resolve if the last customer reply was also more than 5 days ago
     if (!lastCustomerTs || lastCustomerTs <= fiveDaysAgo) {
       db.prepare("UPDATE conversations SET status = 'resolved', resolvedAt = ? WHERE id = ?")
         .run(now, conv.id);
@@ -94,17 +98,17 @@ function resolveStaleConversations() {
 function startCronJobs() {
   // Poll Gmail every 2 minutes
   cron.schedule('*/2 * * * *', () => {
-    pollGmail();
+    pollGmail().catch(err => console.error('[cron:poll]', err.message));
   });
 
   // Check for follow-ups due every 30 minutes
   cron.schedule('*/30 * * * *', () => {
-    sendFollowUps();
+    sendFollowUps().catch(err => console.error('[cron:followup]', err.message));
   });
 
   // Mark stale conversations as resolved daily at 1am
   cron.schedule('0 1 * * *', () => {
-    resolveStaleConversations();
+    try { resolveStaleConversations(); } catch (err) { console.error('[cron:stale]', err.message); }
   });
 
   // Daily analytics rollup at midnight
@@ -120,4 +124,4 @@ function startCronJobs() {
   console.log('[cron] All jobs started');
 }
 
-module.exports = { startCronJobs, getFollowUpsDue, sendFollowUps, pollGmail };
+module.exports = { startCronJobs, getFollowUpsDue, sendFollowUps, pollGmail, resolveStaleConversations };
