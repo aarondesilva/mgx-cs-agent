@@ -38,8 +38,8 @@ function rollupDaily(date) {
   const escalatedFulfillment = fulfillmentEvents.length;
 
   const responseTimes = events.map(e => {
-    try { return JSON.parse(e.detail).responseMs || 0; } catch { return 0; }
-  }).filter(Boolean);
+    try { return JSON.parse(e.detail).responseMs; } catch { return null; }
+  }).filter(ms => typeof ms === 'number');
 
   const avgResponseMs = responseTimes.length
     ? Math.round(responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length)
@@ -86,6 +86,7 @@ function buildWeeklyReport(rows) {
   const resolutionRate = totalTickets > 0 ? Math.round((autoResolved / totalTickets) * 100) : 0;
 
   const allTopics = rows.flatMap(r => {
+    if (Array.isArray(r.topTopics)) return r.topTopics;
     try { return JSON.parse(r.topTopics); } catch { return []; }
   });
   const topicCounts = {};
@@ -120,12 +121,16 @@ async function sendWeeklyReport() {
   const report = buildWeeklyReport(rows);
   const transport = getTransport();
 
-  await transport.sendMail({
-    from: process.env.SUPPORT_EMAIL,
-    to: process.env.ESCALATION_EMAIL,
-    subject: `MGX CS Weekly Report — ${new Date().toISOString().split('T')[0]}`,
-    text: report,
-  });
+  try {
+    await transport.sendMail({
+      from: process.env.SUPPORT_EMAIL,
+      to: process.env.ESCALATION_EMAIL,
+      subject: `MGX CS Weekly Report — ${new Date().toISOString().split('T')[0]}`,
+      text: report,
+    });
+  } catch (err) {
+    console.error('[analytics] Failed to send weekly report:', err.message);
+  }
 }
 
 module.exports = { rollupDaily, buildWeeklyReport, sendWeeklyReport };
