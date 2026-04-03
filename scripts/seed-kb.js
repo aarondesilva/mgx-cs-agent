@@ -246,4 +246,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { isCustomerSender, decodeMimeWord, decodeBody, stripHtml, parseMbox };
+module.exports = { isCustomerSender, decodeMimeWord, decodeBody, stripHtml, parseMbox, synthesizeKB };

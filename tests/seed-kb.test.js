@@ -169,3 +169,30 @@ describe('parseMbox', () => {
     fs.unlinkSync(tmpFile);
   });
 });
+
+describe('synthesizeKB', () => {
+  test('calls Claude and returns text', async () => {
+    const Anthropic = require('@anthropic-ai/sdk').default;
+    const mockCreate = jest.fn().mockResolvedValue({
+      content: [{ type: 'text', text: '## Knowledge Base\n\nTest content.' }],
+    });
+    Anthropic.mockImplementation(() => ({ messages: { create: mockCreate } }));
+
+    const { synthesizeKB } = require('../scripts/seed-kb');
+    const threads = [{ subject: 'Order question', messages: [{ from: 'a@b.com', body: 'Where is my order?' }] }];
+    const result = await synthesizeKB(threads, 'Website text here');
+
+    expect(mockCreate).toHaveBeenCalledTimes(1);
+    expect(result).toBe('## Knowledge Base\n\nTest content.');
+  });
+
+  test('returns empty string when Claude content is missing', async () => {
+    const Anthropic = require('@anthropic-ai/sdk').default;
+    const mockCreate = jest.fn().mockResolvedValue({ content: [] });
+    Anthropic.mockImplementation(() => ({ messages: { create: mockCreate } }));
+
+    const { synthesizeKB } = require('../scripts/seed-kb');
+    const result = await synthesizeKB([], '');
+    expect(result).toBe('');
+  });
+});
