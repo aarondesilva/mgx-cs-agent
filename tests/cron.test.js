@@ -73,3 +73,63 @@ describe('sendFollowUps', () => {
     await expect(sendFollowUps()).resolves.not.toThrow();
   });
 });
+
+describe('learnFromConversations', () => {
+  let tmpKbPath;
+
+  beforeEach(() => {
+    const os = require('os');
+    const path = require('path');
+    const fs = require('fs');
+    tmpKbPath = path.join(os.tmpdir(), `kb-test-${Date.now()}.md`);
+    fs.writeFileSync(tmpKbPath, '# Knowledge Base\n');
+    process.env.KB_PATH_OVERRIDE = tmpKbPath;
+  });
+
+  afterEach(() => {
+    const fs = require('fs');
+    if (fs.existsSync(tmpKbPath)) fs.unlinkSync(tmpKbPath);
+    delete process.env.KB_PATH_OVERRIDE;
+  });
+
+  test('runs without throwing', async () => {
+    const { learnFromConversations } = require('../src/cron');
+    await expect(learnFromConversations()).resolves.not.toThrow();
+  });
+
+  test('appends learned section when 3+ resolved conversations exist', async () => {
+    const Anthropic = require('@anthropic-ai/sdk').default;
+    const db = getDb();
+    const recentTime = new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString();
+
+    for (let i = 0; i < 5; i++) {
+      db.prepare(
+        "INSERT INTO conversations (customerEmail, status, messages, createdAt, resolvedAt) VALUES (?, 'resolved', ?, ?, ?)"
+      ).run(
+        `learn${i}@test.com`,
+        JSON.stringify([
+          { role: 'customer', content: 'Where is my order?' },
+          { role: 'agent', content: 'Your order ships in 1-2 days.' },
+        ]),
+        recentTime,
+        recentTime
+      );
+    }
+
+    Anthropic.mockImplementation(() => ({
+      messages: {
+        create: jest.fn().mockResolvedValue({
+          content: [{ type: 'text', text: 'New FAQ: customers often ask about shipping timelines.' }],
+        }),
+      },
+    }));
+
+    const { learnFromConversations } = require('../src/cron');
+    await learnFromConversations();
+
+    const fs = require('fs');
+    const content = fs.readFileSync(tmpKbPath, 'utf8');
+    expect(content).toContain('## Learned:');
+    expect(content).toContain('shipping timelines');
+  });
+});

@@ -7,6 +7,9 @@ const { processMessage } = require('./pipeline');
 const { rollupDaily, sendWeeklyReport } = require('./analytics');
 const { draftFollowUp } = require('./claude');
 const { markFollowUpSent, logEvent } = require('./logger');
+const fs = require('fs');
+const path = require('path');
+const Anthropic = require('@anthropic-ai/sdk').default;
 
 function getFollowUpsDue() {
   const db = getDb();
@@ -95,6 +98,67 @@ function resolveStaleConversations() {
   }
 }
 
+async function learnFromConversations() {
+  const db = getDb();
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  const resolved = db.prepare(`
+    SELECT id, customerEmail, messages, resolvedAt
+    FROM conversations
+    WHERE status = 'resolved'
+    AND resolvedAt >= ?
+  `).all(sevenDaysAgo);
+
+  if (resolved.length < 3) {
+    console.log(`[cron:learn] ${resolved.length} resolved conversations this week — skipping`);
+    return;
+  }
+
+  const threadSummary = resolved.map((conv, i) => {
+    let messages;
+    try { messages = JSON.parse(conv.messages); } catch { messages = []; }
+    const formatted = messages.map(m => `${m.role.toUpperCase()}: ${m.content || ''}`).join('\n');
+    return `--- CONVERSATION ${i + 1} (${conv.customerEmail}) ---\n${formatted}`;
+  }).join('\n\n');
+
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+  const response = await client.messages.create({
+    model: 'claude-opus-4-6',
+    max_tokens: 1024,
+    messages: [{
+      role: 'user',
+      content: `You are analyzing resolved Microgenix customer support conversations to improve the agent's knowledge base.
+
+Review these ${resolved.length} conversations and extract:
+1. New question patterns not likely covered in existing FAQs
+2. Product knowledge gaps (questions the agent seemed uncertain about)
+3. Any policy or process confusion that came up more than once
+4. 1-2 strong reply excerpts showing ideal tone and handling
+
+Be concise. Only include genuinely new or useful information. If nothing new, respond with exactly: NOTHING_NEW
+
+Conversations:
+${threadSummary.substring(0, 50000)}`,
+    }],
+  });
+
+  const learned = response.content.find(b => b.type === 'text')?.text || '';
+
+  if (learned.trim() === 'NOTHING_NEW') {
+    console.log('[cron:learn] No new learnings this week');
+    return;
+  }
+
+  const kbPath = process.env.KB_PATH_OVERRIDE || path.join(__dirname, '../data/knowledge-base.md');
+  const date = new Date().toISOString().split('T')[0];
+  const section = `\n\n## Learned: ${date} (${resolved.length} conversations)\n\n${learned.trim()}\n`;
+
+  fs.appendFileSync(kbPath, section, 'utf8');
+  logEvent(0, 'kb_learning', { conversationCount: resolved.length, charsAdded: section.length });
+  console.log(`[cron:learn] Appended ${section.length} chars to knowledge-base.md`);
+}
+
 function startCronJobs() {
   // Poll Gmail every 2 minutes
   cron.schedule('*/2 * * * *', () => {
@@ -121,7 +185,12 @@ function startCronJobs() {
     sendWeeklyReport().catch(err => console.error('[cron:weekly]', err.message));
   });
 
+  // Weekly KB learning every Sunday at midnight
+  cron.schedule('0 0 * * 0', () => {
+    learnFromConversations().catch(err => console.error('[cron:learn]', err.message));
+  });
+
   console.log('[cron] All jobs started');
 }
 
-module.exports = { startCronJobs, getFollowUpsDue, sendFollowUps, pollGmail, resolveStaleConversations };
+module.exports = { startCronJobs, getFollowUpsDue, sendFollowUps, pollGmail, resolveStaleConversations, learnFromConversations };
