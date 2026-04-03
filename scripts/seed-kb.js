@@ -16,15 +16,23 @@ const SKIP_DOMAINS = [
 ];
 
 function isCustomerSender(fromHeader) {
-  return !SKIP_DOMAINS.some(d => fromHeader.includes(d));
+  // Extract email address from "Display Name <email@domain>" or bare "email@domain"
+  const emailMatch = fromHeader.match(/<([^>]+)>/) || fromHeader.match(/(\S+@\S+)/);
+  const email = emailMatch ? emailMatch[1].toLowerCase() : fromHeader.toLowerCase();
+  return !SKIP_DOMAINS.some(d => email.includes(d));
 }
 
 function decodeMimeWord(str) {
   return str.replace(/=\?([^?]+)\?([BQ])\?([^?]*)\?=/gi, (_, charset, encoding, text) => {
     if (encoding.toUpperCase() === 'Q') {
-      return text.replace(/_/g, ' ').replace(/=([0-9A-F]{2})/gi, (__, hex) =>
-        String.fromCharCode(parseInt(hex, 16))
-      );
+      // Replace _ with space per RFC 2047
+      const normalized = text.replace(/_/g, ' ');
+      // Decode consecutive =XX hex sequences as UTF-8 bytes
+      const decoded = normalized.replace(/((?:=[0-9A-F]{2})+)/gi, (hexRun) => {
+        const bytes = hexRun.match(/=[0-9A-F]{2}/gi).map(h => parseInt(h.slice(1), 16));
+        return Buffer.from(bytes).toString('utf8');
+      });
+      return decoded;
     }
     if (encoding.toUpperCase() === 'B') {
       return Buffer.from(text, 'base64').toString('utf8');
@@ -64,8 +72,13 @@ function stripHtml(html) {
 }
 
 function parseMbox(filePath) {
-  const raw = fs.readFileSync(filePath, 'utf8');
-  const messageBlocks = raw.split(/\nFrom /).filter(Boolean);
+  let raw = fs.readFileSync(filePath, 'utf8');
+  // Strip leading envelope line so the first message is not lost
+  if (raw.startsWith('From ')) {
+    const firstNewline = raw.indexOf('\n');
+    raw = raw.substring(firstNewline + 1);
+  }
+  const messageBlocks = raw.split(/\nFrom [^\n]*\n/).filter(Boolean);
   const threads = {};
 
   for (const block of messageBlocks) {

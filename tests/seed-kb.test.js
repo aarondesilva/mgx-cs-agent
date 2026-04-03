@@ -38,6 +38,11 @@ describe('decodeMimeWord', () => {
   test('passes through plain strings unchanged', () => {
     expect(decodeMimeWord('Hello World')).toBe('Hello World');
   });
+
+  test('decodes multi-byte UTF-8 Q-encoded characters', () => {
+    const encoded = '=?UTF-8?Q?caf=C3=A9?=';
+    expect(decodeMimeWord(encoded)).toBe('café');
+  });
 });
 
 describe('decodeBody', () => {
@@ -113,6 +118,27 @@ describe('parseMbox', () => {
 
     const threads = parseMbox(tmpFile);
     expect(threads.length).toBe(0);
+
+    fs.unlinkSync(tmpFile);
+  });
+
+  test('does not drop the first message in the file', () => {
+    const mbox = [
+      'From first@gmail.com Mon Jan 01 00:00:00 2024',
+      'From: First Customer <first@gmail.com>',
+      'Subject: First ever email',
+      '',
+      'I am the first email in this mbox file.',
+      '',
+    ].join('\n');
+
+    const tmpFile = path.join(os.tmpdir(), 'test-first.mbox');
+    fs.writeFileSync(tmpFile, mbox);
+
+    const threads = parseMbox(tmpFile);
+    expect(threads.length).toBe(1);
+    expect(threads[0].subject).toBe('First ever email');
+    expect(threads[0].messages[0].body).toContain('first email in this mbox file');
 
     fs.unlinkSync(tmpFile);
   });
