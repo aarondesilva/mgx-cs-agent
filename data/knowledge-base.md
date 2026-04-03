@@ -1,122 +1,223 @@
-# Microgenix Knowledge Base
+
+
+# Microgenix Customer Support Knowledge Base
+
+---
 
 ## About Microgenix
-Microgenix makes functional and nootropic supplements focused on mental wellness, clarity, and microdosing. Products are thoughtfully dosed and third-party tested. We are based in Vancouver, Canada (952 W 4th Ave, Vancouver, BC V6H 4A3) and ship across Canada and the United States. We are committed to clean ingredients and genuine customer care.
+
+### Mission
+Microgenix is a Canadian natural wellness company dedicated to transforming lives through the power of psilocybin microdosing and macrodosing. The company was born from a shared belief that life should be lived to its fullest, filled with joy, connection, and a sense of purpose. Microgenix aims to create a world where feeling anything less than our best is simply not an option.
+
+### Values
+- **Nature-first wellness:** The belief that nature offers the best remedies for mental clarity, emotional balance, and overall well-being.
+- **Community and connection:** Microgenix sees itself as a community of passionate individuals, not just a product company.
+- **Personal growth:** Supporting customers whether they want to enhance daily life or embark on a journey of self-discovery.
+- **Empathy and joy:** A vision for a world where joy, empathy, and creativity are the norm.
+- **Accessibility:** Making natural wellness approachable for beginners and experienced users alike.
+
+### Brand Voice
+Warm, genuine, knowledgeable, and encouraging. Like a trusted friend who happens to know a lot about natural wellness. Never clinical, never pushy. Always supportive and patient. Uses plain language. Keeps things conversational and upbeat without being performative.
+
+---
 
 ## Products
 
-### Capsules
-- **Wavy Capsules (300mg)** — Available in 3-capsule sample ($21), 10 capsules ($65), and 30-capsule jar ($109)
-- **Clarity Lite Capsules (75mg)** — 30 capsules ($66). Lighter dose option for daytime use.
-- **Clarity Capsules** — Available in multiple sizes
-- **Macro Capsules (450mg) — Blue Meanies** — 5-capsule sample ($43), 30-capsule jar ($141). Higher-dose option.
-- **Support Capsules (Nootropic Blend)** — 50 capsules ($48). Nootropic blend.
-- **Lion's Mane Capsules** — 10 capsules. Cognitive support mushroom supplement.
-- **Enlight Capsules (225mg)** — Mid-range dose. May go out of stock periodically.
-- **Restore Capsules** — Recovery-focused formula.
-- **Heroic Dose Line (5g capsules)** — High-dose option.
+### Product Categories
 
-### Gummies
-- **Mini Gummies (100mg)** — Sour Raspberry jar/15 ($49), Fuzzy Peach sample/8 ($33)
-- **Sour Gummies (300mg)** — Sour Apple, jar of 8 ($64)
+**Capsules**
+- **Clarity Capsules** — Microdose psilocybin capsules. The flagship microdosing product. Common dose size is 125 mg per capsule. Available in various quantities. Designed for focus, mental clarity, and emotional balance.
+- **Enlight Capsules** — Referenced in customer orders. A psilocybin capsule product (likely a microdose or light-dose blend).
+- **Wavy Capsules** — Referenced in customer orders. A psilocybin capsule product.
+- **Macro Capsules** — Available in different strains including Golden Teacher, Penis Envy, and Blue Meanie. Designed for macrodose experiences. Available in quantities such as "Macro 10" (10 capsules). Dose tiers vary (see Macrodosing section).
 
-### Confections
-- **Indulge Chocolate Bars (3.5g)** — Milk Chocolate Toffee flavour
-- **Smooth Peanut Butter Cups (75mg)** — Chocolate peanut butter cups
+**Chocolates**
+- Psilocybin-infused chocolates. Available in various formulations. Referenced in customer orders alongside capsules and gummies.
+
+**Gummies**
+- **Mushroom Gummies / Sour Gummies** — Available in 300 mg dose. Come in flavors including Sour Cherry. Sold in sample sizes (e.g., Sample of 3 for $33.00) and larger jars. Flavors referenced by customers include Fuzzy Peaches and Wonder Melons.
+
+**Bundles**
+- Combination packs that may include capsules, gummies, and/or chocolates at a bundled price.
+
+**Apparel**
+- Branded Microgenix apparel available in the shop.
+
+**Brain Supplements**
+- Supplementary products in the brain health category (likely including Lion's Mane, given the Stamets Stack protocol).
+
+### Product Browsing Options
+Customers can shop by:
+- **Category:** Best Seller, On Sale, Bundle, Capsules, Chocolate, Gummies, Apparel
+- **Dosage:** Microdosing, Macrodosing, Brain Supplements
+- **Benefit:** De-stress, Focus, Energy, Creativity, Vibe Enhancement, Depression Relief, Relaxation & Sleep, Trip Out
+
+### Pricing & Promotions
+- Free shipping on orders over $150 (CAD).
+- 30-Day Money Back Guarantee on all products.
+- Sale events occur (e.g., Black Friday/holiday sales). Customers should verify sale prices are applied at checkout.
+- Custom coupon codes are sometimes issued by support (e.g., for price adjustment, shipping refund, or goodwill gestures). Codes can be set with long or no expiry as appropriate.
+- Earn Points Program available for repeat customers.
+- All prices are in Canadian Dollars (CAD).
+
+---
+
+## Dosing Protocols
+
+### Microdosing
+
+Microdosing means taking a very small amount of psilocybin, typically between 100 mg and 300 mg of dried mushroom. At these levels, the effects are sub-perceptual, meaning you won't experience hallucinations or anything that disrupts your daily routine. The most common capsule dose at Microgenix is 125 mg. Some customers use lower doses such as 75 mg.
+
+Effects usually begin within 30 to 60 minutes and may include an uplifted mood, increased awareness, more motivation, and a boost in creativity.
+
+**Reported benefits of microdosing:**
+- Reduced anxiety and depression
+- Increased focus and productivity
+- Boosted creativity and optimism
+- Heightened awareness
+- Strengthened immune system
+- Improved sleep and relaxation
+
+### Fadiman Protocol
+Take one microdose, then take two days off. Repeat this cycle for 4 to 8 weeks, then take a 2 to 4 week break. This is the most beginner-friendly protocol because the rest days help prevent tolerance buildup and give you time to notice the effects.
+
+Example: Dose on Monday, skip Tuesday and Wednesday, dose again on Thursday, skip Friday and Saturday, dose again on Sunday, and so on.
+
+### Stamets Stack
+Take a microdose for 4 days in a row, then take 3 days off. Repeat for 4 to 6 weeks, then take a 2 to 6 week break. The Stamets Stack traditionally combines psilocybin with Lion's Mane mushroom and niacin (vitamin B3). Lion's Mane stimulates nerve growth factor (NGF) and may help promote the growth of new brain cells (neurogenesis). This protocol is popular with customers looking for cognitive and neurological benefits.
+
+### Macrodosing Tiers
+
+Macrodosing involves taking a larger, psychoactive dose of psilocybin. These experiences are not sub-perceptual and require preparation, a safe setting, and (at higher doses) a trusted trip sitter.
+
+**450 mg to 1 g:** A mild-to-moderate experience. You may notice gentle visual shifts, enhanced colors, and a light sensory enhancement. Good for someone easing into deeper experiences.
+
+**1 g to 2 g:** A potent experience with noticeable visuals like fractals and patterns. Expect a strong mood shift, emotional openness, and heightened sensory perception.
+
+**2 g to 3 g:** A profound experience. Deep introspection, a sense of oneness and interconnectedness, and powerful emotional and visual effects. Suitable for more experienced users.
+
+**3 g and above (Hero Dose):** An intense, fully immersive psychedelic experience. A trusted trip sitter is strongly recommended. This level can produce ego dissolution and deeply transformative experiences.
+
+**General macrodose timing:** Effects begin within 30 to 90 minutes. The peak typically happens around 2 to 3 hours in. Total duration can last 6 to 8 hours.
+
+### Strains Available for Macrodosing
+- **Golden Teacher** — A classic, well-rounded strain popular with beginners and experienced users alike.
+- **Penis Envy** — Known for higher potency. Recommended for more experienced users.
+- **Blue Meanie** — Another potent strain option.
+
+---
 
 ## Shipping Policy
-- Ships across Canada and the United States
-- Primary carriers: UPS (US orders) and Canada Post (Canadian orders)
-- Tracking may take up to 24 hours to activate after the shipping label is created
-- If tracking has not updated after 5 days, escalate to the fulfillment team
-- Orders are processed within 1-2 business days
+
+### General Information
+- **Free shipping** on all orders over $150 CAD.
+- Orders below $150 have a shipping fee (and an expedited shipping option is available at checkout for an additional cost).
+- Microgenix ships within Canada.
+
+### Processing and Timelines
+- Orders are aimed to ship within 1 business day of payment confirmation.
+- During periods of heavy order volume, or if an order is placed after 12 pm, processing may take up to 2 business days.
+- The shipping confirmation email contains the date the order was shipped, not an estimated delivery date.
+
+### Carriers
+- Orders are shipped via Canada Post or a third-party carrier network.
+- Tracking numbers are provided in the shipping confirmation email.
+- Tracking can sometimes show "third party has the package" during handoff between carriers. This is normal and does not mean the package is lost.
+
+### Tracking Behavior and Common Issues
+- Tracking updates may lag behind actual package movement, especially during weather events or holiday rushes.
+- If tracking has not updated for several days, it is usually a carrier delay, not a lost package. Willow will investigate and provide the customer with the most current information available.
+- Packages are shipped discreetly. Delivery drivers are noted to take care to conceal packages at the door.
+
+### Delayed or Missing Packages
+- If a package appears lost (no tracking update for an extended period), Microgenix will investigate with the carrier.
+- If a package is confirmed lost, Microgenix will typically reship the order or offer a store credit/voucher that includes the value of any coupon originally used.
+- Vouchers for lost packages are generally set with no expiry date and include free shipping.
+
+---
 
 ## Payment
-- Credit and debit cards accepted at checkout
-- Interac E-transfer accepted (payee: Willow Pea, email: Abcpayments1@gmail.com)
-- If paying by e-transfer from a name or email different from the order profile, government ID is required for customer safety
-- Orders are held safely until payment is confirmed
 
-## Pricing / Currency
-- Prices are displayed in both CAD and USD on the website
-- Canadian customers: prices shown are in CAD
-- US customers: prices shown are in USD
-- If there is any confusion about currency, clarify which currency applies to the customer's order
+### Accepted Methods
+1. **Credit Card** — Visa, Mastercard, and potentially other major cards. Customers must be logged into their Customer Account to see the credit card option at checkout.
+2. **Interac e-Transfer** — A popular payment method for Canadian customers. Available as a checkout option.
 
-## Welcome Offer
-- New customers receive a welcome coupon: **MACRO25** ($25 off their next order)
-- This is delivered via email after signup or first contact
-- If a customer did not receive or use their welcome coupon, we can remind them of it
+### How e-Transfer Works
+- When a customer places an order and selects e-Transfer, an Order Confirmation email is sent immediately (before payment is received). The order is marked as "Pending Payment."
+- The customer receives e-Transfer instructions from Microgenix support (or in the confirmation email).
+- The customer sends the e-Transfer to the designated Microgenix email.
+- Once payment is received, the order moves to Processing and then ships.
+- If payment is not received, the customer will receive Payment Reminder emails. If the order remains unpaid, it is eventually marked as Cancelled.
 
-## Return / Satisfaction Policy
-- 30-day satisfaction guarantee
-- Contact us within 30 days of delivery for a full refund
-- Refund requests go to the team for processing — do not process refunds autonomously
-- Escalate all cancellation and refund requests to the team
+### Important Payment Notes
+- **Currency:** All prices and payments are in Canadian Dollars (CAD).
+- **Customers receiving a confirmation before paying is normal.** This is because the e-Transfer option generates the order summary at time of placement, not at time of payment. This is the single most common point of confusion for new customers.
+- **Switching payment methods:** If a customer selected e-Transfer but wants to pay by credit card, they can log into their Customer Account, go to "Orders," and complete payment with their card. Alternatively, support can assist.
+- **Never ask customers to send credit card details over email.** If a customer shares card information in an email (this has happened), process the situation carefully, flag it internally, and advise the customer to use the secure checkout link instead. Do not store or reference the card details.
+
+### Refunds
+- Credit card refunds take 2 to 5 business days to reflect back in the customer's account.
+- E-Transfer refunds may be handled directly or as store credit/voucher depending on the situation.
+
+---
+
+## Returns and Satisfaction Guarantee
+
+### 30-Day Money Back Guarantee
+Microgenix offers a 30-Day Money Back Guarantee on all products. If a customer is not satisfied with their order, they can reach out within 30 days of receiving it.
+
+### Product Issues
+- **Missing items:** If a product is missing from a shipment (e.g., gummies not included), Microgenix will reship the missing item. In some cases, a small upgrade or bonus is included as a goodwill gesture.
+- **Damaged or melted products:** If gummies or chocolates arrive melted or damaged (which can happen during warm weather or if exposed to heat during transit), Microgenix will send replacement jars or offer coupon codes to make it right. The customer may be asked which specific items were affected.
+- **Wrong item received:** If a customer receives the wrong strain or product, the team will work to correct it.
+
+### Cancellations
+- Orders that are still in "Processing" status can be cancelled and refunded.
+- Once an order has been packed and shipped, it is no longer eligible for cancellation.
+- If a customer placed a duplicate order, one can typically be cancelled if caught before shipping.
+- For e-Transfer orders marked as Pending Payment, the customer can simply not send payment and the order will auto-cancel, or they can request cancellation via email.
+
+---
 
 ## Common Customer Questions
 
-### When will my order ship?
-Orders are processed within 1-2 business days. You will receive a tracking email once your order ships. Note that it may take up to 24 hours for the carrier to scan the package and update tracking.
+### "I got an order confirmation but I haven't paid yet. What happened?"
+Hi [Name], no need to worry at all! Because we offer Interac e-Transfer as a payment option, Order Confirmations are sent out as soon as you finish placing the order. Your order is currently marked as Pending Payment. You can complete payment by logging into your Customer Account, going to "Orders," and paying from there. Or if you'd prefer to pay by e-Transfer, just let me know and I'll send you the instructions right away.
 
-### My tracking number isn't working or isn't updating.
-Tracking activates after the carrier scans the package, which can take up to 24 hours after the label is created. If it has been more than 5 days with no movement, let us know and our fulfillment team will look into it right away.
+### "I want to pay by credit card but it's only showing e-Transfer. Can you help?"
+Hi [Name], thanks for reaching out! Please make sure you're logged into your Customer Account before heading to checkout. Being logged in will ensure you can see and select the Credit Card option. If you're still having trouble after that, let me know and we'll get it sorted for you.
 
-### Can I change my shipping address?
-Yes, as long as the order has not yet shipped. Ask the customer for their new address, confirm it back to them in the reply, then update it in the system. If the order has already shipped, we cannot change the address.
+### "When will my order ship?"
+Hi [Name], thanks for checking in! We aim to ship orders within one business day of receiving payment. During busier periods or if an order is placed after 12 pm, it can sometimes take up to 2 business days. Once your order ships, you'll receive an email with your tracking number. Let me check on your specific order and get back to you with an update.
 
-### My order shows as completed but I haven't received it.
-"Completed" in our system means the order has been fulfilled on our end. It does not mean delivered. Check the tracking number and share it with the customer.
+### "Has my order shipped? It's been [X] days."
+Hi [Name], I completely understand the concern. Let me look into this for you right now. [Check order status.] Your order shipped on [date] and here's your tracking link: [link]. If tracking hasn't updated recently, that's usually a carrier delay on their end, not anything wrong with your package. I'll keep an eye on it too and will reach out if anything seems off.
 
-### Do you ship to the US?
-Yes, we ship to the United States using UPS.
+### "My tracking says a third party has my package. What does that mean?"
+Hi [Name], that's totally normal! It just means your package was handed off between carriers during transit. It's still on its way to you. If the tracking doesn't update within a couple more business days, let me know and I'll look into it further for you.
 
-### Are your products available in US dollars?
-Yes, pricing is shown in both CAD and USD on the website.
+### "Can I cancel my order?"
+Hi [Name], let me check the status of your order right away. If it's still in Processing, I can absolutely cancel it and get your refund started. If it's already been packed and shipped, it's no longer eligible for cancellation, but we can explore other options for you. Let me take a look and get right back to you.
 
-### What is microdosing? How do I take these?
-Microdosing involves taking small, sub-perceptual doses on a consistent schedule. Common protocols: every other day, or 1 day on / 2 days off. We recommend starting with the lowest dose option and adjusting. Always recommend consulting a healthcare provider, especially if taking other medications.
+### "I placed a duplicate order by mistake. Please cancel one."
+Hi [Name], I can see both orders here. Let me cancel the duplicate for you right away. If payment went through on both, the refund for the cancelled order will show up on your card within 2 to 5 business days. Your other order will continue processing and ship as normal. Let me know if you'd like me to go ahead with this.
 
-### Is it safe to take with medication?
-We always recommend consulting a healthcare provider before starting any new supplement, especially if taking prescription medication.
+### "I accidentally placed an order. My credit card was tied to the account and it charged automatically."
+Hi [Name], no worries, I can help! I'll cancel that order for you. The refund will be back on your card within 2 to 5 business days. If you have another active order you'd like to keep, just confirm and I'll make sure everything is set.
 
-### What is the difference between the products?
-- **Clarity / Clarity Lite**: lower dose, good for daytime clarity and focus
-- **Wavy**: mid-range, popular starting point
-- **Macro / Heroic**: higher dose, for experienced users
-- **Support (Nootropic Blend)**: non-psychoactive mushroom blend for cognitive support
-- **Lion's Mane**: non-psychoactive, cognitive and nerve support
-- For product-specific guidance, recommend the customer start with a sample size
+### "Can I change my shipping address?"
+Hi [Name], thanks for catching that! Let me update the shipping address on your order to [new address]. I've got that updated for you now. Everything else on your order stays the same. Let me know if you need anything else.
 
-### An item I want is out of stock.
-Some products go in and out of stock (especially Enlight, Restore, and high-demand sizes). Let the customer know and offer to update them when it's back, or suggest a similar product at a comparable dose.
+### "Can I change an item in my order?"
+Hi [Name], let me check if your order is still in Processing. If it is, I can swap that out for you, no problem. [If still processing:] Great news, I've updated your order to [correct item]. You're all set! [If already shipped:] Unfortunately this one has already been packed and shipped, so I'm not able to make changes at this point. Let me know how you'd like to handle it and we'll figure out the best option together.
 
-### I have a discount/coupon code question.
-New customers have access to MACRO25 ($25 off). If a customer has not used it, remind them. If they have a different code issue, escalate to the team.
+### "My order is missing an item."
+Hi [Name], I'm really sorry about that! That's definitely not the experience we want for you. I'm going to get [missing item] sent out to you right away. Could you confirm the shipping address you'd like it sent to? I'll make sure it gets to you as quickly as possible.
 
-### How do I cancel my order?
-Order cancellations are handled by our team. Do not cancel autonomously — escalate immediately.
+### "My gummies arrived melted."
+Hi [Name], I'm so sorry to hear that! Sometimes the heat during transit can affect gummies, and I know that's really frustrating. Can you let me know which specific jars were affected? I'd love to send replacement jars out to you. We want to make sure you get to enjoy everything you ordered.
 
-## Example Replies (Voice Reference)
+### "I'm on SSRIs/medications. Is microdosing safe for me?"
+Hi [Name], thank you so much for sharing that with me. It really helps me give you the best guidance. Psilocybin can interact with SSRIs and other medications, so I always recommend chatting with your healthcare provider before starting any microdosing practice. They'll be able to look at your specific medications and help you make the safest decision. If you'd like, I can cancel your order in the meantime, and we're always here when you're ready.
 
-### Tracking info request
-Customer: "Hi where is the notes section?" (re: tracking in shipping email)
-Microgenix (Willow): "Hi Brett, thanks for reaching out again and bringing this to our attention! I've notified our tech department so they can update the email to include the tracking notes as it should be listed in there. Here is your UPS tracking number: [tracking]. Willow, Microgenix Customer Relations / Support"
-
-### Welcome coupon reminder (proactive)
-Customer: (repeat customer, hadn't used welcome offer)
-Microgenix (Willow): "Hi Leah, thanks for reaching out! I noticed you never redeemed your Welcome Coupon, MACRO25, on your previous orders. This is still redeemable for you and you'll receive $25 off your next order! If you ever have any other questions, please don't hesitate to reach out. :) Willow, Microgenix Customer Relations / Support"
-
-### General inquiry acknowledgment
-Microgenix: "Hi [name], thank you for getting in touch. We have received your inquiry and will get back to you within one business day."
-
-### Address / shipping concern (warm, helpful)
-Note: When a customer says an address is correct but there's no alternative, acknowledge warmly, update what you can, and flag to fulfillment if the order is at risk.
-
-## Business Context
-- Willow is the primary customer relations contact (Willow Lea / Willow Pea)
-- Carriers: UPS for US, Canada Post for Canada
-- Products go out of stock regularly — check WooCommerce before promising availability
-- Customers are generally warm and enthusiastic about the products
-- Common first-time purchase journey: contact form → welcome email → coupon code → first order
-- Affiliate and ambassador programs exist — forward those inquiries to the team
+### "I'm a beginner with drug-resistant depression
