@@ -66,9 +66,9 @@ Customers can shop by:
 
 ### Microdosing
 
-Microdosing means taking a very small amount of psilocybin, typically between 100 mg and 300 mg of dried mushroom. At these levels, the effects are sub-perceptual, meaning you won't experience hallucinations or anything that disrupts your daily routine. The most common capsule dose at Microgenix is 125 mg. Some customers use lower doses such as 75 mg.
+Microdosing means taking a very small amount of psilocybin, typically between 100 mg and 300 mg of dried mushroom. At these levels, most people find the effects are sub-perceptual, meaning customers typically report no hallucinations or anything that disrupts their daily routine. The most common capsule dose at Microgenix is 125 mg. Some customers use lower doses such as 75 mg.
 
-Effects usually begin within 30 to 60 minutes and may include an uplifted mood, increased awareness, more motivation, and a boost in creativity.
+Most customers notice effects within 30 to 60 minutes. Customers have reported an uplifted mood, increased awareness, more motivation, and a boost in creativity.
 
 **Reported benefits of microdosing:**
 - Reduced anxiety and depression
@@ -232,14 +232,14 @@ When a customer says the product isn't working or they don't feel anything, ask 
 **The four key questions:**
 1. Are they currently taking any medications? Many prescription medications (especially antidepressants, SSRIs, and mood stabilizers) can significantly reduce or block the effects of psilocybin. This is the most common reason people don't feel anything.
 2. How did they take the dose? Did they take all capsules together or spread them out? They should take the full dose at once.
-3. Did they take them with food? A full stomach significantly reduces absorption. An empty or light stomach is best.
+3. Did they take them with food? We actually recommend taking with a light meal or snack to avoid any upset stomach or the experience being too intense. If they took on a completely empty stomach, that could explain feeling too much; if they barely ate, effects should still come through.
 4. Is this their first time ever trying psilocybin, or have they had success before? First-timers sometimes need 2-3 sessions before feeling effects (the "awakening effect"). If they've had success before, something has changed.
 
 ### Step 2: Only after understanding their situation
 
 Once you have their answers, then you can offer relevant guidance:
 - If on medication: acknowledge this warmly, explain interactions gently, recommend they speak with their healthcare provider, and escalate to the team if they seem concerned or confused.
-- If dosing method is the issue: explain the best way to take it (full dose, relatively empty stomach, give it 60-90 minutes).
+- If dosing method is the issue: recommend taking the full dose at once with a light meal or snack, and give it 60-90 minutes.
 - If first time: explain the awakening effect — some people need a few sessions before their body responds. Encourage them to try again.
 - If none of the above: offer to escalate to Willow who can talk through it personally.
 
