@@ -275,8 +275,8 @@
       #mgx-chat-launcher {
         bottom: 16px;
         right: 16px;
-        height: 52px;
-        padding: 0 18px 0 14px;
+        height: 48px;
+        padding: 0 16px 0 12px;
       }
 
       #mgx-chat-window {
@@ -286,21 +286,19 @@
         bottom: 0;
         top: auto;
         width: 100%;
-        height: 72%;
-        max-height: 72%;
+        height: 420px;
+        max-height: 80vh;
         border-radius: 20px 20px 0 0;
         border: none;
         border-top: 1px solid #D2D7E5;
         box-shadow: 0 -4px 24px rgba(43,58,114,0.14);
-        transform: translateZ(0);
-        will-change: transform;
       }
 
       #mgx-chat-messages {
         flex: 1;
         min-height: 0;
         max-height: none;
-        padding: 16px 12px;
+        padding: 14px 12px;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
@@ -313,8 +311,7 @@
       }
 
       #mgx-chat-input-area {
-        padding: 10px 12px;
-        padding-bottom: max(12px, env(safe-area-inset-bottom));
+        padding: 10px 12px 14px;
         flex-shrink: 0;
       }
 
@@ -537,16 +534,26 @@
       this.style.height = Math.min(this.scrollHeight, 96) + 'px';
     });
 
-    // Lock widget above keyboard on mobile using visualViewport
+    // Keep widget above keyboard on mobile
     if (window.visualViewport) {
-      function onViewportResize() {
+      function onViewportChange() {
         if (window.innerWidth > 600) return;
-        var offsetFromBottom = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop;
-        win.style.bottom = offsetFromBottom + 'px';
-        launcher.style.bottom = (offsetFromBottom + 72) + 'px';
+        var vv = window.visualViewport;
+        // How far the keyboard has pushed up from the bottom
+        var keyboardOffset = window.innerHeight - vv.height - vv.offsetTop;
+        if (keyboardOffset < 0) keyboardOffset = 0;
+        // Pin chat window just above keyboard
+        win.style.bottom = keyboardOffset + 'px';
+        // Shrink window height to fit in visible space, leaving room for header + messages + input
+        var availableHeight = vv.height;
+        var maxH = Math.min(availableHeight, 520);
+        win.style.height = maxH + 'px';
+        // Scroll messages to bottom
+        var msgs = document.getElementById('mgx-chat-messages');
+        if (msgs) msgs.scrollTop = msgs.scrollHeight;
       }
-      window.visualViewport.addEventListener('resize', onViewportResize);
-      window.visualViewport.addEventListener('scroll', onViewportResize);
+      window.visualViewport.addEventListener('resize', onViewportChange);
+      window.visualViewport.addEventListener('scroll', onViewportChange);
     }
   }
 
