@@ -362,7 +362,7 @@
       <div id="mgx-chat-input-area">
         <textarea id="mgx-chat-input" placeholder="${PLACEHOLDER}" rows="1"></textarea>
         <button id="mgx-chat-send" aria-label="Send message">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:30px;height:30px;min-width:30px;min-height:30px;"><path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:15px;height:15px;min-width:15px;min-height:15px;"><path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
     `;
