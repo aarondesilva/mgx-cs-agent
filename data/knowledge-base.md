@@ -229,10 +229,11 @@ This is one of the most important customer scenarios to handle well. Never jump 
 
 When a customer says the product isn't working or they don't feel anything, ask these questions before offering any guidance. Ask one or two at a time — not all at once.
 
-**The three key questions:**
+**The four key questions:**
 1. Are they currently taking any medications? Many prescription medications (especially antidepressants, SSRIs, and mood stabilizers) can significantly reduce or block the effects of psilocybin. This is the most common reason people don't feel anything.
-2. How did they take the dose? Did they take all capsules together or spread them out? Taking them spread out or on a full stomach can reduce absorption. They should ideally take the full dose at once on a relatively empty stomach.
-3. Is this their first time, or have they taken the product before with success? First-timers sometimes need 2-3 sessions before feeling effects ("the awakening effect"). If they've had success before, something has changed — medication, tolerance, dose timing, or stomach contents.
+2. How did they take the dose? Did they take all capsules together or spread them out? They should take the full dose at once.
+3. Did they take them with food? A full stomach significantly reduces absorption. An empty or light stomach is best.
+4. Is this their first time ever trying psilocybin, or have they had success before? First-timers sometimes need 2-3 sessions before feeling effects (the "awakening effect"). If they've had success before, something has changed.
 
 ### Step 2: Only after understanding their situation
 
