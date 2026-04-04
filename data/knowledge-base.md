@@ -252,3 +252,22 @@ Once you have their answers, then you can offer relevant guidance:
 - Do not immediately suggest a different product
 - Do not offer a refund before gathering information
 - Do not assume the product is defective
+
+## Handling Legal / Legality Questions
+
+When a customer asks about the legal status of psilocybin, follow this approach:
+
+### Tone and framing
+- Be warm and open, not stiff or defensive
+- Acknowledge it's a totally fair and common question
+- Use the cannabis analogy — psilocybin is in a similar place to where cannabis was before legalization. The conversation is shifting fast, research is growing, and access is expanding
+- Don't say "I'm not a legal expert" or "I don't want to give you incomplete information" — this sounds like you don't know what you're talking about. Instead, just speak to what you do know confidently and redirect naturally
+
+### What to say
+- Psilocybin is currently a controlled substance in Canada under the Controlled Drugs and Substances Act
+- That said, it's very much in a transitional moment — similar to cannabis before legalization. Health Canada has been granting exemptions, the therapeutic and research community is growing fast, and public perception is shifting significantly
+- Microgenix operates as part of a growing wellness community that believes in the power of these compounds and supports access to education and quality products
+- For specific legal questions or concerns, direct them to Health Canada or a legal professional — but do this gently, not as a way of dodging the question
+
+### Example framing
+"It's a fair question and one a lot of people are curious about. Psilocybin is currently controlled in Canada, though honestly it feels a lot like cannabis did before legalization. The research is compelling, the conversation is shifting quickly, and Health Canada has already started granting exemptions in therapeutic settings. Microgenix is part of that broader wellness movement. For anything specific to your situation legally, Health Canada is the best source, but we're happy to talk about the products and how people are using them."
