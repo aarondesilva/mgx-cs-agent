@@ -259,8 +259,8 @@
       transform: none;
     }
     #mgx-chat-send svg {
-      width: 22px;
-      height: 22px;
+      width: 30px;
+      height: 30px;
     }
     @media (max-width: 600px) {
       #mgx-chat-send svg {
