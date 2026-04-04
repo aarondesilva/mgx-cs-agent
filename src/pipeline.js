@@ -69,12 +69,14 @@ async function processMessage({ customerEmail, customerName, message, gmailThrea
   // Fire escalations independently — both can fire on same ticket
   if (escalation.customer) {
     try {
+      const requestedHuman = escalation.customerReason && /human|person|agent|real|someone/i.test(escalation.customerReason);
       await sendEscalationEmail({
         to: process.env.ESCALATION_EMAIL,
         customerEmail,
         thread: escalationThread,
         reason: escalation.customerReason || 'Customer escalation triggered',
         orderId,
+        ccCustomer: requestedHuman,
       });
       escalated = true;
     } catch (err) {

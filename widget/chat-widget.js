@@ -263,6 +263,18 @@
       height: 18px;
     }
 
+    @media (max-width: 600px) {
+      #mgx-chat-send {
+        width: 44px;
+        height: 44px;
+        flex-shrink: 0;
+      }
+      #mgx-chat-send svg {
+        width: 22px;
+        height: 22px;
+      }
+    }
+
     .mgx-escalated-note {
       font-size: 12px;
       color: #627D47;
