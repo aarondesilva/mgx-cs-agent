@@ -264,12 +264,12 @@
     }
     @media (max-width: 600px) {
       #mgx-chat-send {
-        width: 64px;
-        height: 64px;
+        width: 42px;
+        height: 42px;
       }
       #mgx-chat-send svg {
-        width: 40px;
-        height: 40px;
+        width: 26px;
+        height: 26px;
       }
     }
 
