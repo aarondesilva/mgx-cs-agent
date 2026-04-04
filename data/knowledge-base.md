@@ -135,7 +135,7 @@ The experience does not end when the effects wear off. Journal while it is fresh
 ### General Information
 - **Free shipping** on all orders over $150 CAD.
 - Orders below $150 have a shipping fee (and an expedited shipping option is available at checkout for an additional cost).
-- Microgenix ships within Canada.
+- Microgenix ships within Canada and the United States.
 
 ### Processing and Timelines
 - Orders are aimed to ship within 1 business day of payment confirmation.
