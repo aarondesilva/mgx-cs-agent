@@ -66,7 +66,11 @@ Customers can shop by:
 
 ### Microdosing
 
-Microdosing means taking a very small amount of psilocybin, typically between 100 mg and 300 mg of dried mushroom. At these levels, most people find the effects are sub-perceptual, meaning customers typically report no hallucinations or anything that disrupts their daily routine. The most common capsule dose at Microgenix is 125 mg. Some customers use lower doses such as 75 mg.
+Microdosing means taking a very small amount of psilocybin. The true sub-perceptual range is 30 mg to 125 mg — at these levels, most customers find the effects blend into their day and they notice subtle improvements in mood, focus, and calm without any impairment.
+
+From 125 mg to 300 mg, effects become more noticeable. Customers who are sensitive to psilocybin may find that anything above 125 mg starts to push toward a recreational experience. The 300 mg gummies, for example, can produce a dramatic effect for some people.
+
+The most common starting capsule dose at Microgenix is 125 mg. We always recommend starting low — try 75 mg or 125 mg first, on a day off, so you can gauge how your body responds before building up. Once you know how you feel at that dose, you can adjust from there.
 
 Most customers notice effects within 30 to 60 minutes. Customers have reported an uplifted mood, increased awareness, more motivation, and a boost in creativity.
 

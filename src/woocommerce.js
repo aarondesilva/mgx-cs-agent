@@ -145,13 +145,33 @@ async function handleToolCall(toolName, input) {
       }
 
       case 'get_tracking_info': {
-        const { data } = await wc.get(`orders/${input.orderId}`);
-        const trackingMeta = data.meta_data.find(m => m.key === '_wc_shipment_tracking_items');
-        if (!trackingMeta || !trackingMeta.value) return `No tracking info found for order #${input.orderId}.`;
-        const items = JSON.parse(trackingMeta.value);
-        if (!items.length) return `No tracking info found for order #${input.orderId}.`;
-        const t = items[0];
-        return `Tracking: ${t.tracking_number} via ${t.tracking_provider}${t.date_shipped ? ` (shipped ${t.date_shipped})` : ''}.`;
+        const { data: order } = await wc.get(`orders/${input.orderId}`);
+
+        // Try shipment tracking plugin metadata first
+        const trackingMeta = order.meta_data && order.meta_data.find(m => m.key === '_wc_shipment_tracking_items');
+        if (trackingMeta && trackingMeta.value) {
+          try {
+            const items = typeof trackingMeta.value === 'string' ? JSON.parse(trackingMeta.value) : trackingMeta.value;
+            if (items && items.length) {
+              const t = items[0];
+              return `Tracking: ${t.tracking_number} via ${t.tracking_provider || 'carrier'}${t.date_shipped ? ` (shipped ${t.date_shipped})` : ''}.`;
+            }
+          } catch {}
+        }
+
+        // Fall back to scanning order notes for a tracking number
+        const { data: notes } = await wc.get(`orders/${input.orderId}/notes`);
+        if (notes && notes.length) {
+          const trackingPattern = /\b([A-Z0-9]{10,30})\b/;
+          for (const note of notes) {
+            const match = note.note && note.note.match(trackingPattern);
+            if (match) {
+              return `Tracking number found in order notes: ${match[1]}. Order status: ${order.status}.`;
+            }
+          }
+        }
+
+        return `No tracking info found yet for order #${input.orderId}. Order status is currently: ${order.status}.`;
       }
 
       case 'update_order_status': {

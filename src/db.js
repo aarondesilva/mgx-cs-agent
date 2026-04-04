@@ -7,12 +7,20 @@ const DB_PATH = process.env.DB_PATH || path.join(__dirname, '../data/mgx-cs.db')
 
 let db;
 
+function ensureDir(filePath) {
+  const dir = path.dirname(filePath);
+  if (!require('fs').existsSync(dir)) {
+    require('fs').mkdirSync(dir, { recursive: true });
+  }
+}
+
 function getDb() {
   if (!db) throw new Error('Database not initialized. Call initDb() first.');
   return db;
 }
 
 function initDb() {
+  ensureDir(DB_PATH);
   db = new Database(DB_PATH);
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');

@@ -72,53 +72,116 @@ function stripHtml(html) {
 }
 
 function parseMbox(filePath) {
-  let raw = fs.readFileSync(filePath, 'utf8');
-  // Strip leading envelope line so the first message is not lost
-  if (raw.startsWith('From ')) {
-    const firstNewline = raw.indexOf('\n');
-    raw = raw.substring(firstNewline + 1);
-  }
-  const messageBlocks = raw.split(/\nFrom [^\n]*\n/).filter(Boolean);
+  // Stream the file line-by-line in sync chunks to avoid the V8 string size
+  // limit that bites on large mbox files (>512 MB).
+  const CHUNK = 32 * 1024 * 1024; // 32 MB read buffer
+  const fd = fs.openSync(filePath, 'r');
+  const buf = Buffer.allocUnsafe(CHUNK);
   const threads = {};
 
-  for (const block of messageBlocks) {
-    const lines = block.split('\n');
-    const headers = {};
-    let headerEnd = 0;
+  // State machine: accumulate one message at a time
+  let remainder = '';
+  let inHeaders = true;
+  let headers = {};
+  let bodyLines = [];
+  let headerEnd = false;
+  let isFirstLine = true;
 
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].trim() === '') { headerEnd = i; break; }
-      const match = lines[i].match(/^([A-Za-z-]+):\s*(.*)/);
-      if (match) {
-        const key = match[1].toLowerCase();
-        let value = match[2];
-        while (i + 1 < lines.length && /^\s+/.test(lines[i + 1])) {
-          value += ' ' + lines[++i].trim();
-        }
-        headers[key] = value;
+  function processMessage() {
+    const from = headers['from'] || '';
+    if (isCustomerSender(from)) {
+      const subject = decodeMimeWord(headers['subject'] || '(no subject)');
+      const transferEncoding = headers['content-transfer-encoding'] || '';
+      const rawBody = bodyLines.join('\n');
+      const body = decodeBody(rawBody, transferEncoding)
+        .split('\n')
+        .filter(l => !l.startsWith('>') && !l.startsWith('On ') && l.trim() !== '--')
+        .join('\n')
+        .substring(0, 1000)
+        .trim();
+      if (body) {
+        const key = subject.replace(/^Re:\s*/i, '').trim();
+        if (!threads[key]) threads[key] = { subject: key, messages: [] };
+        threads[key].messages.push({ from, body });
       }
     }
-
-    const from = headers['from'] || '';
-    if (!isCustomerSender(from)) continue;
-
-    const subject = decodeMimeWord(headers['subject'] || '(no subject)');
-    const bodyLines = lines.slice(headerEnd + 1);
-    const transferEncoding = headers['content-transfer-encoding'] || '';
-    const rawBody = bodyLines.join('\n');
-    const body = decodeBody(rawBody, transferEncoding)
-      .split('\n')
-      .filter(l => !l.startsWith('>') && !l.startsWith('On ') && l.trim() !== '--')
-      .join('\n')
-      .substring(0, 1000)
-      .trim();
-
-    if (!body) continue;
-
-    const key = subject.replace(/^Re:\s*/i, '').trim();
-    if (!threads[key]) threads[key] = { subject: key, messages: [] };
-    threads[key].messages.push({ from, body });
+    // Reset state for next message
+    headers = {};
+    bodyLines = [];
+    inHeaders = true;
+    headerEnd = false;
   }
+
+  let pendingHeaderKey = null;
+  let pendingHeaderVal = null;
+
+  function flushPendingHeader() {
+    if (pendingHeaderKey !== null) {
+      headers[pendingHeaderKey] = pendingHeaderVal;
+      pendingHeaderKey = null;
+      pendingHeaderVal = null;
+    }
+  }
+
+  function processLine(line) {
+    // Mbox envelope line — signals start of a new message
+    if (/^From [^\s]/.test(line)) {
+      if (isFirstLine) {
+        isFirstLine = false;
+        // Start collecting headers for first message (don't processMessage yet)
+        return;
+      }
+      // Finish the current message
+      flushPendingHeader();
+      processMessage();
+      return;
+    }
+    isFirstLine = false;
+
+    if (inHeaders) {
+      if (line.trim() === '') {
+        // Blank line marks end of headers
+        flushPendingHeader();
+        inHeaders = false;
+        headerEnd = true;
+        return;
+      }
+      // Folded header continuation
+      if (/^\s/.test(line)) {
+        if (pendingHeaderKey !== null) {
+          pendingHeaderVal += ' ' + line.trim();
+        }
+        return;
+      }
+      // New header field
+      flushPendingHeader();
+      const match = line.match(/^([A-Za-z-]+):\s*(.*)/);
+      if (match) {
+        pendingHeaderKey = match[1].toLowerCase();
+        pendingHeaderVal = match[2];
+      }
+    } else {
+      bodyLines.push(line);
+    }
+  }
+
+  let bytesRead;
+  while ((bytesRead = fs.readSync(fd, buf, 0, CHUNK, null)) > 0) {
+    const chunk = remainder + buf.slice(0, bytesRead).toString('utf8');
+    const lines = chunk.split('\n');
+    // Keep the last (possibly incomplete) line as remainder
+    remainder = lines.pop();
+    for (const line of lines) {
+      processLine(line);
+    }
+  }
+  // Process any trailing remainder
+  if (remainder) processLine(remainder);
+  // Flush the last message
+  flushPendingHeader();
+  processMessage();
+
+  fs.closeSync(fd);
 
   return Object.values(threads).filter(t => t.messages.length > 0);
 }
