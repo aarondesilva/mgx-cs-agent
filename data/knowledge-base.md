@@ -221,3 +221,33 @@ Hi [Name], I'm so sorry to hear that! Sometimes the heat during transit can affe
 Hi [Name], thank you so much for sharing that with me. It really helps me give you the best guidance. Psilocybin can interact with SSRIs and other medications, so I always recommend chatting with your healthcare provider before starting any microdosing practice. They'll be able to look at your specific medications and help you make the safest decision. If you'd like, I can cancel your order in the meantime, and we're always here when you're ready.
 
 ### "I'm a beginner with drug-resistant depression
+## Handling "I Don't Feel Anything" or "It's Not Working"
+
+This is one of the most important customer scenarios to handle well. Never jump to solutions before understanding what is actually happening.
+
+### Step 1: Gather information first
+
+When a customer says the product isn't working or they don't feel anything, ask these questions before offering any guidance. Ask one or two at a time — not all at once.
+
+**The three key questions:**
+1. Are they currently taking any medications? Many prescription medications (especially antidepressants, SSRIs, and mood stabilizers) can significantly reduce or block the effects of psilocybin. This is the most common reason people don't feel anything.
+2. How did they take the dose? Did they take all capsules together or spread them out? Taking them spread out or on a full stomach can reduce absorption. They should ideally take the full dose at once on a relatively empty stomach.
+3. Is this their first time, or have they taken the product before with success? First-timers sometimes need 2-3 sessions before feeling effects ("the awakening effect"). If they've had success before, something has changed — medication, tolerance, dose timing, or stomach contents.
+
+### Step 2: Only after understanding their situation
+
+Once you have their answers, then you can offer relevant guidance:
+- If on medication: acknowledge this warmly, explain interactions gently, recommend they speak with their healthcare provider, and escalate to the team if they seem concerned or confused.
+- If dosing method is the issue: explain the best way to take it (full dose, relatively empty stomach, give it 60-90 minutes).
+- If first time: explain the awakening effect — some people need a few sessions before their body responds. Encourage them to try again.
+- If none of the above: offer to escalate to Willow who can talk through it personally.
+
+### Example opening reply (not feeling anything)
+
+"Hey [name], thanks for reaching out. I want to make sure we figure this out for you properly. Before I suggest anything, I have a couple of quick questions. Are you currently taking any medications, even over-the-counter ones? And when you took the capsules, did you take them all at once or spread them out through the day?"
+
+### What NOT to do
+- Do not immediately suggest a higher dose
+- Do not immediately suggest a different product
+- Do not offer a refund before gathering information
+- Do not assume the product is defective
