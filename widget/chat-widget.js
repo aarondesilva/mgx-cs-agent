@@ -259,20 +259,8 @@
       transform: none;
     }
     #mgx-chat-send svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    @media (max-width: 600px) {
-      #mgx-chat-send {
-        width: 44px;
-        height: 44px;
-        flex-shrink: 0;
-      }
-      #mgx-chat-send svg {
-        width: 22px;
-        height: 22px;
-      }
+      width: 22px;
+      height: 22px;
     }
 
     .mgx-escalated-note {

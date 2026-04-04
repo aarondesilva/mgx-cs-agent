@@ -92,17 +92,36 @@ Take a microdose for 4 days in a row, then take 3 days off. Repeat for 4 to 6 we
 
 ### Macrodosing Tiers
 
-Macrodosing involves taking a larger, psychoactive dose of psilocybin. These experiences are not sub-perceptual and require preparation, a safe setting, and (at higher doses) a trusted trip sitter.
+Macrodosing involves taking a larger, psychoactive dose of psilocybin. These experiences are full and immersive. They require real preparation. Before anything else, set and setting matter more than the dose itself.
 
-**450 mg to 1 g:** A mild-to-moderate experience. You may notice gentle visual shifts, enhanced colors, and a light sensory enhancement. Good for someone easing into deeper experiences.
+**450 mg to 1 g:** A gentle entry point. Most people notice soft visual shifts, colours becoming more vivid, and a light sensory enhancement. Great for someone stepping into deeper territory for the first time.
 
-**1 g to 2 g:** A potent experience with noticeable visuals like fractals and patterns. Expect a strong mood shift, emotional openness, and heightened sensory perception.
+**1 g to 2 g:** Things get real here. Noticeable visuals, emotional openness, strong mood shifts. Some people find this the sweet spot for personal insight without feeling overwhelmed.
 
-**2 g to 3 g:** A profound experience. Deep introspection, a sense of oneness and interconnectedness, and powerful emotional and visual effects. Suitable for more experienced users.
+**2 g to 3 g:** A profound experience. Deep introspection, a sense of connection to everything, powerful emotional and visual effects. For people who have been here before and know how to navigate it.
 
-**3 g and above (Hero Dose):** An intense, fully immersive psychedelic experience. A trusted trip sitter is strongly recommended. This level can produce ego dissolution and deeply transformative experiences.
+**3 g and above (Hero Dose):** This is full immersion. Ego dissolution is possible. A trusted trip sitter is not optional at this level. These experiences can be deeply transformative and require integration afterward.
 
-**General macrodose timing:** Effects begin within 30 to 90 minutes. The peak typically happens around 2 to 3 hours in. Total duration can last 6 to 8 hours.
+**General macrodose timing:** Effects begin within 30 to 90 minutes. The peak happens around 2 to 3 hours in. Total duration can last 6 to 8 hours. Clear your whole day.
+
+### Set and Setting
+
+This is the most important thing anyone can know about macrodosing. The experience is shaped almost entirely by who you are going in, who you are with, and where you are. Research consistently backs this up.
+
+**Set (your mindset):**
+Your emotional state, intentions, and headspace going in will follow you through the whole experience. Go in curious and open, not rigid about what should happen. Write down what you are hoping to explore beforehand. Make sure you are rested, hydrated, and not carrying fresh stress or unresolved conflict. If something big is weighing on you, it will likely surface. That is not always bad, but you should know it going in.
+
+**Setting (your environment):**
+Choose somewhere you feel completely safe and comfortable. Familiar is better, especially for your first macro experience. Soft lighting, a good playlist ready in advance, blankets and water nearby, no unexpected interruptions. Put your phone on do not disturb. Lock the door. Let people know you are unavailable.
+
+**Who you are with:**
+This is huge. The people around you shape the entire vibe of the experience. A trip sitter should be someone sober, calm, and genuinely supportive. They are not there to insert their energy or their opinions. They are there to hold space. Keep the group small. Do not macrodose around people who are skeptical, chaotic, or who you do not fully trust.
+
+**What to avoid:**
+Do not macrodose during major life stress, relationship conflict, or grief unless you are working with a guide. Avoid alcohol before and after. Do not make big life decisions immediately after. Give yourself a few days to integrate before acting on anything.
+
+**Integration:**
+The experience does not end when the effects wear off. Journal while it is fresh. Talk to your trip sitter about what came up. Some people work with a therapist to process deeper experiences. The insight only sticks if you do something with it.
 
 ### Strains Available for Macrodosing
 - **Golden Teacher** — A classic, well-rounded strain popular with beginners and experienced users alike.
