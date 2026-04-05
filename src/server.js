@@ -78,7 +78,7 @@ app.post('/chat', chatCors, async (req, res) => {
     console.log('[chat] done');
 
     // Strip email sign-off from chat replies — not needed in widget UI
-    const chatReply = reply.replace(/\n+Willow,?\s*Microgenix Customer Support\s*$/i, '').trim();
+    const chatReply = reply.replace(/\n+(Avery|Willow)[,\n].*$/is, '').trim();
 
     res.json({
       reply: chatReply,

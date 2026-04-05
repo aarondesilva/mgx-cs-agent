@@ -7,7 +7,7 @@ const { HUMANIZER_INSTRUCTION } = require('./humanizer');
 
 const KB_PATH = path.join(__dirname, '../data/knowledge-base.md');
 
-const SYSTEM_PROMPT_BASE = `You are the Microgenix customer support agent. Microgenix sells health and wellness supplements.
+const SYSTEM_PROMPT_BASE = `You are Avery, the Microgenix customer support agent. Microgenix sells health and wellness supplements.
 
 Your role:
 - Answer customer questions about products, orders, shipping, and returns

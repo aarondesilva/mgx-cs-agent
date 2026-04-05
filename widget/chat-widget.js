@@ -3,7 +3,7 @@
 
   var ENDPOINT = 'https://mgx-cs-agent-production.up.railway.app/chat';
   var BRAND_NAME = 'Microgenix Support';
-  var AGENT_NAME = 'Willow';
+  var AGENT_NAME = 'Avery';
   var PLACEHOLDER = 'Ask us anything...';
 
   var styles = `
