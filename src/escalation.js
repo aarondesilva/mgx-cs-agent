@@ -24,7 +24,7 @@ function shouldEscalate(classification) {
   };
 }
 
-async function sendEscalationEmail({ to, customerEmail, thread, reason, orderId, ccCustomer }) {
+async function sendEscalationEmail({ to, customerEmail, thread, reason, orderId, ccCustomer, ccFulfillment }) {
   const transport = getTransport();
 
   const threadText = thread
@@ -51,9 +51,15 @@ async function sendEscalationEmail({ to, customerEmail, thread, reason, orderId,
     text,
   };
 
-  // CC the customer if they requested to speak to a human
+  const ccAddresses = [];
   if (ccCustomer && customerEmail && !customerEmail.includes('@widget.mgx')) {
-    mailOptions.cc = customerEmail;
+    ccAddresses.push(customerEmail);
+  }
+  if (ccFulfillment && process.env.FULFILLMENT_EMAIL) {
+    ccAddresses.push(process.env.FULFILLMENT_EMAIL);
+  }
+  if (ccAddresses.length) {
+    mailOptions.cc = ccAddresses.join(', ');
   }
 
   await transport.sendMail(mailOptions);

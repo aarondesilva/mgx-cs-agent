@@ -70,6 +70,7 @@ async function processMessage({ customerEmail, customerName, message, gmailThrea
   if (escalation.customer) {
     try {
       const requestedHuman = escalation.customerReason && /human|person|agent|real|someone/i.test(escalation.customerReason);
+      const isShippingTopic = /shipping|tracking|carrier|delivery|lost|package/i.test(classification.topic + ' ' + (escalation.customerReason || ''));
       await sendEscalationEmail({
         to: process.env.ESCALATION_EMAIL,
         customerEmail,
@@ -77,6 +78,7 @@ async function processMessage({ customerEmail, customerName, message, gmailThrea
         reason: escalation.customerReason || 'Customer escalation triggered',
         orderId,
         ccCustomer: requestedHuman,
+        ccFulfillment: isShippingTopic,
       });
       escalated = true;
     } catch (err) {
