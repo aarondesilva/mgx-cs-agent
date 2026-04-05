@@ -22,10 +22,15 @@ const chatCors = cors({
   methods: ['POST', 'OPTIONS'],
 });
 
-// Serve widget file with permissive CORS so any site can load it
+// Serve widget files with permissive CORS so any site can load them
 app.get('/widget/chat-widget.js', cors(), (req, res) => {
   res.setHeader('Content-Type', 'application/javascript');
   res.sendFile(path.join(__dirname, '../widget/chat-widget.js'));
+});
+
+app.get('/widget/logo.png', cors(), (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=31536000');
+  res.sendFile(path.join(__dirname, '../widget/logo.png'));
 });
 
 app.get('/health', (_req, res) => {
