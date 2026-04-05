@@ -499,7 +499,7 @@
     var isOpen = false;
 
     // Add welcome message
-    addMessage('agent', 'Hey! We know AI bots usually feel useless, but I\'ve been trained by the best humans. Ask me anything: products, orders, tracking, dosing, mushroom knowledge. I\'m fully connected to the store.');
+    addMessage('agent', 'Hey! Not your average chatbot. I\'ve been built specifically for Microgenix and trained on everything we do. Ask me anything: products, orders, tracking, dosing, mushroom knowledge. Fully connected to the store.');
 
     function open() {
       isOpen = true;
