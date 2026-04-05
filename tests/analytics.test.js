@@ -13,7 +13,7 @@ jest.mock('nodemailer', () => ({
 const { initDb, getDb } = require('../src/db');
 initDb();
 
-const { rollupDaily, buildWeeklyReport } = require('../src/analytics');
+const { rollupDaily, buildWeeklyReport, buildTranscripts } = require('../src/analytics');
 
 function seedEvents() {
   const db = getDb();
@@ -56,5 +56,37 @@ describe('buildWeeklyReport', () => {
     expect(typeof report).toBe('string');
     expect(report).toContain('10');
     expect(report).toContain('tracking');
+  });
+});
+
+describe('buildTranscripts', () => {
+  test('returns placeholder when no conversations', () => {
+    expect(buildTranscripts([])).toContain('No conversations');
+  });
+
+  test('includes customer email, status, and messages', () => {
+    const convs = [
+      {
+        id: 42,
+        customerEmail: 'buyer@test.com',
+        createdAt: '2026-04-01T10:00:00.000Z',
+        status: 'resolved',
+        messages: JSON.stringify([
+          { role: 'customer', content: 'Where is my order?', ts: '2026-04-01T10:00:00.000Z' },
+          { role: 'agent', content: 'Your order is on its way!', ts: '2026-04-01T10:01:00.000Z' },
+        ]),
+      },
+    ];
+    const out = buildTranscripts(convs);
+    expect(out).toContain('buyer@test.com');
+    expect(out).toContain('Where is my order?');
+    expect(out).toContain('Your order is on its way!');
+    expect(out).toContain('CUSTOMER');
+    expect(out).toContain('AGENT');
+  });
+
+  test('handles malformed messages gracefully', () => {
+    const convs = [{ id: 1, customerEmail: 'x@test.com', createdAt: '2026-04-01T00:00:00Z', status: 'active', messages: 'not-json' }];
+    expect(() => buildTranscripts(convs)).not.toThrow();
   });
 });

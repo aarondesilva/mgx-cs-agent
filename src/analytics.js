@@ -109,16 +109,50 @@ function buildWeeklyReport(rows) {
   ].join('\n');
 }
 
+function buildTranscripts(conversations) {
+  if (!conversations.length) return 'No conversations this week.\n';
+
+  return conversations.map(conv => {
+    let messages;
+    try { messages = JSON.parse(conv.messages); } catch { messages = []; }
+
+    const header = [
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+      `Conversation #${conv.id}`,
+      `Customer: ${conv.customerEmail}`,
+      `Started:  ${conv.createdAt}`,
+      `Status:   ${conv.status}`,
+      `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+    ].join('\n');
+
+    const body = messages.length
+      ? messages.map(m => {
+          const role = m.role === 'customer' ? 'CUSTOMER' : 'AGENT   ';
+          const ts = m.ts ? ` [${m.ts}]` : '';
+          return `${role}${ts}:\n${m.content}\n`;
+        }).join('\n')
+      : '(no messages recorded)\n';
+
+    return `${header}\n${body}`;
+  }).join('\n\n');
+}
+
 async function sendWeeklyReport() {
   const db = getDb();
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const since = sevenDaysAgo.toISOString().split('T')[0];
 
   const rows = db.prepare(
     'SELECT * FROM analytics_daily WHERE date >= ? ORDER BY date ASC'
-  ).all(sevenDaysAgo.toISOString().split('T')[0]);
+  ).all(since);
+
+  const conversations = db.prepare(
+    'SELECT * FROM conversations WHERE createdAt >= ? ORDER BY createdAt ASC'
+  ).all(since + 'T00:00:00.000Z');
 
   const report = buildWeeklyReport(rows);
+  const transcripts = buildTranscripts(conversations);
   const transport = getTransport();
 
   try {
@@ -127,10 +161,17 @@ async function sendWeeklyReport() {
       to: process.env.ESCALATION_EMAIL,
       subject: `MGX CS Weekly Report — ${new Date().toISOString().split('T')[0]}`,
       text: report,
+      attachments: [
+        {
+          filename: `mgx-transcripts-${since}.txt`,
+          content: transcripts,
+          contentType: 'text/plain',
+        },
+      ],
     });
   } catch (err) {
     console.error('[analytics] Failed to send weekly report:', err.message);
   }
 }
 
-module.exports = { rollupDaily, buildWeeklyReport, sendWeeklyReport };
+module.exports = { rollupDaily, buildWeeklyReport, buildTranscripts, sendWeeklyReport };

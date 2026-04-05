@@ -7,6 +7,7 @@ const { processMessage } = require('./pipeline');
 const { assembleContext } = require('./knowledge');
 const { classifyMessage, draftReply } = require('./claude');
 const { getDb } = require('./db');
+const { sendWeeklyReport } = require('./analytics');
 
 const app = express();
 app.use(express.json());
@@ -213,6 +214,21 @@ app.get('/stats', (req, res) => {
 </div>
 </body>
 </html>`);
+});
+
+// Admin: trigger weekly report on demand
+app.post('/admin/send-report', async (req, res) => {
+  const password = process.env.STATS_PASSWORD;
+  if (password && req.query.key !== password) {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+  try {
+    await sendWeeklyReport();
+    res.json({ status: 'sent' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = app;
