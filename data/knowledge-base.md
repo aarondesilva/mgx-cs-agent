@@ -164,6 +164,7 @@ The experience does not end when the effects wear off. Journal while it is fresh
 ### Accepted Methods
 1. **Credit Card** — Visa, Mastercard, and potentially other major cards. Customers must be logged into their Customer Account to see the credit card option at checkout.
 2. **Interac e-Transfer** — A popular payment method for Canadian customers. Available as a checkout option.
+3. **Crypto** — Bitcoin, Ethereum, and other cryptocurrencies accepted via CoinPayments. Available as a checkout option. Payment is processed at time of order placement.
 
 ### How e-Transfer Works
 - When a customer places an order and selects e-Transfer, an Order Confirmation email is sent immediately (before payment is received). The order is marked as "Pending Payment."
@@ -177,6 +178,22 @@ The experience does not end when the effects wear off. Journal while it is fresh
 - **Customers receiving a confirmation before paying is normal.** This is because the e-Transfer option generates the order summary at time of placement, not at time of payment. This is the single most common point of confusion for new customers.
 - **Switching payment methods:** If a customer selected e-Transfer but wants to pay by credit card, they can log into their Customer Account, go to "Orders," and complete payment with their card. Alternatively, support can assist.
 - **Never ask customers to send credit card details over email.** If a customer shares card information in an email (this has happened), process the situation carefully, flag it internally, and advise the customer to use the secure checkout link instead. Do not store or reference the card details.
+- **E-transfer instructions are at checkout.** When a customer asks where to send an e-transfer, direct them to complete checkout on the site — the instructions are provided there automatically. You do not need to send them manually.
+- **Failed credit card orders do not charge the customer.** If a card order fails or is not processed, the customer's card was never charged. Their cart should still have items in it; if not, they can re-add and check out again.
+
+### When Credit Card Checkout Is Down
+If Stripe or credit card checkout is experiencing issues, e-Transfer is the fallback. Proactively reach out to affected customers (those who attempted to place an order during the outage) with this framing:
+- Acknowledge the issue plainly — there's a checkout problem with credit cards, escalated with Stripe, expected to be resolved in a few days
+- Offer e-Transfer as the alternative: their cart should still be available when they log in
+- Keep it brief and reassuring, not alarming
+
+### Handling E-Transfer Skepticism
+Some customers find e-Transfer unfamiliar or "sketchy," especially if they're used to paying by card everywhere. Reassure them directly:
+- E-Transfer is Microgenix's **original payment method** — it's been offered since day one, not something new or unusual
+- It's completely secure — processed the same way as any standard bank-to-bank transfer
+- Don't be defensive about it; just state it matter-of-factly with confidence
+
+**Example:** "E-transfer is actually our original payment method and something we've offered since day one. It's completely secure and processed the same way as any standard bank-to-bank transfer."
 
 ### Refunds
 - Credit card refunds take 2 to 5 business days to reflect back in the customer's account.
@@ -209,6 +226,15 @@ Hi [Name], no need to worry at all! Because we offer Interac e-Transfer as a pay
 
 ### "I want to pay by credit card but it's only showing e-Transfer. Can you help?"
 Hi [Name], thanks for reaching out! Please make sure you're logged into your Customer Account before heading to checkout. Being logged in will ensure you can see and select the Credit Card option. If you're still having trouble after that, let me know and we'll get it sorted for you.
+
+### "I tried to place an order but something went wrong / my card didn't go through."
+Hi [Name], sorry for the trouble! Just so you know, your card was never charged — the order wasn't processed. Your cart should still have your items in it when you log back in. If not, you can re-add them and try again. Let me know if you run into anything along the way!
+
+### "Where do I send the e-transfer? / How does e-transfer work?"
+Hi [Name], all the e-transfer instructions are included right in the checkout process on the site. Just go through checkout and select e-Transfer — it'll walk you through everything. Let me know if you have any questions along the way!
+
+### "Is e-transfer safe? It seems sketchy."
+Totally understand the concern! E-transfer is actually our original payment method — something we've offered since day one. It's completely secure and processed the same way as any standard bank-to-bank transfer. Once you place your order you'll get an email confirmation, and it'll ship once we receive the payment. Let me know if there's anything else I can help with!
 
 ### "When will my order ship?"
 Hi [Name], thanks for checking in! We aim to ship orders within one business day of receiving payment. During busier periods or if an order is placed after 12 pm, it can sometimes take up to 2 business days. Once your order ships, you'll receive an email with your tracking number. Let me check on your specific order and get back to you with an update.
