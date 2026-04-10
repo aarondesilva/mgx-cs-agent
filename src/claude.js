@@ -26,6 +26,7 @@ Analyze the customer's message and conversation history. Return ONLY valid JSON 
 Escalation rules:
 - escalateCustomer = true if confidence < 0.65
 - escalateCustomer = true if customer explicitly asks for a human
+- escalateCustomer = true if customer sounds angry, pissed off, or uses strong language
 - escalateCustomer = true if thread shows customer getting more upset or more confused
 - escalateCustomer = true if any mention of medical concern, adverse reaction, or legal threat
 - escalateFulfillment = true for lost packages, wrong items, carrier failures, or tracking not updating after 5+ days`;
