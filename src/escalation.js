@@ -1,19 +1,6 @@
 'use strict';
 
-const nodemailer = require('nodemailer');
-
-function getTransport() {
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      type: 'OAuth2',
-      user: process.env.SUPPORT_EMAIL,
-      clientId: process.env.GMAIL_CLIENT_ID,
-      clientSecret: process.env.GMAIL_CLIENT_SECRET,
-      refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-    },
-  });
-}
+const { sendEmail } = require('./gmail');
 
 function shouldEscalate(classification) {
   return {
@@ -25,8 +12,6 @@ function shouldEscalate(classification) {
 }
 
 async function sendEscalationEmail({ to, customerEmail, thread, reason, orderId, ccCustomer, ccFulfillment }) {
-  const transport = getTransport();
-
   const threadText = thread
     .map(m => `${m.role.toUpperCase()}: ${m.content}`)
     .join('\n\n---\n\n');
@@ -44,13 +29,6 @@ async function sendEscalationEmail({ to, customerEmail, thread, reason, orderId,
     threadText,
   ].filter(Boolean).join('\n');
 
-  const mailOptions = {
-    from: process.env.SUPPORT_EMAIL,
-    to,
-    subject,
-    text,
-  };
-
   const ccAddresses = [];
   if (ccCustomer && customerEmail && !customerEmail.includes('@widget.mgx')) {
     ccAddresses.push(customerEmail);
@@ -58,11 +36,13 @@ async function sendEscalationEmail({ to, customerEmail, thread, reason, orderId,
   if (ccFulfillment && process.env.FULFILLMENT_EMAIL) {
     ccAddresses.push(process.env.FULFILLMENT_EMAIL);
   }
-  if (ccAddresses.length) {
-    mailOptions.cc = ccAddresses.join(', ');
-  }
 
-  await transport.sendMail(mailOptions);
+  await sendEmail({
+    to,
+    cc: ccAddresses.length ? ccAddresses.join(', ') : undefined,
+    subject,
+    text,
+  });
 }
 
 module.exports = { shouldEscalate, sendEscalationEmail };

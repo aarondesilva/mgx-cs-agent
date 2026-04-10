@@ -1,20 +1,7 @@
 'use strict';
 
-const nodemailer = require('nodemailer');
+const { sendEmail } = require('./gmail');
 const { getDb } = require('./db');
-
-function getTransport() {
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      type: 'OAuth2',
-      user: process.env.SUPPORT_EMAIL,
-      clientId: process.env.GMAIL_CLIENT_ID,
-      clientSecret: process.env.GMAIL_CLIENT_SECRET,
-      refreshToken: process.env.GMAIL_REFRESH_TOKEN,
-    },
-  });
-}
 
 function rollupDaily(date) {
   const db = getDb();
@@ -153,13 +140,11 @@ async function sendWeeklyReport() {
 
   const report = buildWeeklyReport(rows);
   const transcripts = buildTranscripts(conversations);
-  const transport = getTransport();
 
   try {
-    await transport.sendMail({
-      from: process.env.SUPPORT_EMAIL,
+    await sendEmail({
       to: process.env.ESCALATION_EMAIL,
-      subject: `MGX CS Weekly Report — ${new Date().toISOString().split('T')[0]}`,
+      subject: `MGX CS Weekly Report - ${new Date().toISOString().split('T')[0]}`,
       text: report,
       attachments: [
         {

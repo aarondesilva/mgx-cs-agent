@@ -159,4 +159,63 @@ async function sendReply(gmailThreadId, to, body) {
   });
 }
 
-module.exports = { parseInboundMessages, sendReply };
+async function sendEmail({ to, cc, subject, text, attachments }) {
+  const gmail = getGmail();
+
+  const boundary = 'mgx_boundary_' + Date.now();
+  const mixedBoundary = 'mgx_mixed_' + Date.now();
+
+  const hasAttachments = attachments && attachments.length > 0;
+  const topBoundary = hasAttachments ? mixedBoundary : boundary;
+  const topContentType = hasAttachments
+    ? `multipart/mixed; boundary="${mixedBoundary}"`
+    : `text/plain; charset=utf-8`;
+
+  const headers = [
+    `From: Microgenix Support <${process.env.SUPPORT_EMAIL}>`,
+    `To: ${to}`,
+  ];
+  if (cc) headers.push(`Cc: ${cc}`);
+  headers.push(
+    `Subject: ${subject}`,
+    `MIME-Version: 1.0`,
+    `Content-Type: ${topContentType}`,
+  );
+
+  const parts = [headers.join('\r\n'), ''];
+
+  if (hasAttachments) {
+    parts.push(
+      `--${mixedBoundary}`,
+      'Content-Type: text/plain; charset=utf-8',
+      '',
+      text,
+      '',
+    );
+    for (const att of attachments) {
+      const base64Content = Buffer.from(att.content).toString('base64');
+      parts.push(
+        `--${mixedBoundary}`,
+        `Content-Type: ${att.contentType || 'application/octet-stream'}; name="${att.filename}"`,
+        `Content-Disposition: attachment; filename="${att.filename}"`,
+        `Content-Transfer-Encoding: base64`,
+        '',
+        base64Content,
+        '',
+      );
+    }
+    parts.push(`--${mixedBoundary}--`);
+  } else {
+    parts.push(text);
+  }
+
+  const raw = parts.join('\r\n');
+  const encoded = Buffer.from(raw).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+  await gmail.users.messages.send({
+    userId: 'me',
+    requestBody: { raw: encoded },
+  });
+}
+
+module.exports = { parseInboundMessages, sendReply, sendEmail };
