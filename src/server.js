@@ -64,6 +64,42 @@ app.post('/webhook', (req, res) => {
   });
 });
 
+// In-memory chat session history — keyed by sessionId, expires after 30 minutes
+const chatSessions = new Map();
+const CHAT_SESSION_TTL = 30 * 60 * 1000;
+const MAX_CHAT_HISTORY = 20; // keep last 20 messages per session
+
+function getChatHistory(sessionId) {
+  const session = chatSessions.get(sessionId);
+  if (!session) return [];
+  if (Date.now() - session.updatedAt > CHAT_SESSION_TTL) {
+    chatSessions.delete(sessionId);
+    return [];
+  }
+  return session.messages;
+}
+
+function appendChatHistory(sessionId, role, content) {
+  let session = chatSessions.get(sessionId);
+  if (!session) {
+    session = { messages: [], updatedAt: Date.now() };
+    chatSessions.set(sessionId, session);
+  }
+  session.messages.push({ role, content });
+  if (session.messages.length > MAX_CHAT_HISTORY) {
+    session.messages = session.messages.slice(-MAX_CHAT_HISTORY);
+  }
+  session.updatedAt = Date.now();
+}
+
+// Clean up expired sessions every 10 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [id, session] of chatSessions) {
+    if (now - session.updatedAt > CHAT_SESSION_TTL) chatSessions.delete(id);
+  }
+}, 10 * 60 * 1000);
+
 // Synchronous endpoint for chat widget — waits for reply and returns it
 app.options('/chat', chatCors);
 app.post('/chat', chatCors, async (req, res) => {
@@ -74,14 +110,21 @@ app.post('/chat', chatCors, async (req, res) => {
     return;
   }
 
+  const sid = sessionId || customerEmail;
+  const thread = getChatHistory(sid);
+
   try {
     console.log('[chat] assembleContext...');
     const context = await assembleContext(customerEmail);
     console.log('[chat] classifyMessage...');
-    const classification = await classifyMessage([], message);
+    const classification = await classifyMessage(thread, message);
     console.log('[chat] draftReply...');
-    const reply = await draftReply([], message, context, customerEmail);
+    const reply = await draftReply(thread, message, context, customerEmail);
     console.log('[chat] done');
+
+    // Store both sides in session history
+    appendChatHistory(sid, 'customer', message);
+    appendChatHistory(sid, 'agent', reply);
 
     // Strip email sign-off from chat replies — not needed in widget UI
     const chatReply = reply.replace(/\n+(Avery|Willow)[,\n].*$/is, '').trim();

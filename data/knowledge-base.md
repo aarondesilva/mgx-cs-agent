@@ -269,6 +269,11 @@ Hi [Name], I'm so sorry to hear that! Sometimes the heat during transit can affe
 ### "I'm on SSRIs/medications. Is microdosing safe for me?"
 Hi [Name], thank you so much for sharing that with me. It really helps me give you the best guidance. Psilocybin can interact with SSRIs and other medications, so I always recommend chatting with your healthcare provider before starting any microdosing practice. They'll be able to look at your specific medications and help you make the safest decision. If you'd like, I can cancel your order in the meantime, and we're always here when you're ready.
 
+### "I signed up for the free ebook / $25 off but never received the email."
+Hi [Name], thanks for reaching out! A couple of quick things to check. First, can you take a look in your junk or spam folder? Sometimes our confirmation emails end up there. Also, double-check that the email address you entered during signup is exactly right, even a small typo can prevent delivery. If you've checked both and still nothing, let me know the email you signed up with and I'll look into it on our end.
+
+If the customer has already checked junk/spam and confirmed their email is correct, escalate to tigertiger@microgenix.net so the team can verify the signup on the backend and resend manually. Let the customer know: "I'm passing this to the team now so they can check the backend and get that sorted for you. You'll hear back shortly."
+
 ### "I'm a beginner with drug-resistant depression
 ## Handling "I Don't Feel Anything" or "It's Not Working"
 
