@@ -50,7 +50,7 @@ describe('classifyMessage', () => {
     await classifyMessage([], 'test message');
 
     const call = mockCreate.mock.calls[0][0];
-    expect(call.model).toBe('claude-opus-4-6');
+    expect(call.model).toBe('claude-haiku-4-5');
     expect(call.system).toBeDefined();
     expect(call.messages).toBeDefined();
   });
@@ -102,9 +102,13 @@ describe('draftReply', () => {
     await draftReply([], 'Hi', context, 'test@test.com');
 
     const call = mockCreate.mock.calls[0][0];
-    expect(call.system).toContain('acknowledge the customer');
+    expect(call.model).toBe('claude-sonnet-4-6');
+    expect(Array.isArray(call.system)).toBe(true);
+    expect(call.system[0].text).toContain('acknowledge the customer');
+    expect(call.system[0].cache_control).toEqual({ type: 'ephemeral' });
     expect(call.tools).toBeDefined();
     expect(call.tools.length).toBe(8);
+    expect(call.tools[call.tools.length - 1].cache_control).toEqual({ type: 'ephemeral' });
   });
 });
 

@@ -37,13 +37,13 @@ function formatThreadForClassifier(thread) {
 }
 
 async function classifyMessage(thread, newMessage) {
-  const threadText = formatThreadForClassifier(thread);
+  const threadText = formatThreadForClassifier(trimThread(thread));
   const userContent = `CONVERSATION HISTORY:\n${threadText}\n\nNEW MESSAGE FROM CUSTOMER:\n${newMessage}`;
 
   try {
     const response = await getClient().messages.create({
-      model: 'claude-opus-4-6',
-      max_tokens: 256,
+      model: 'claude-haiku-4-5',
+      max_tokens: 150,
       system: CLASSIFY_SYSTEM,
       messages: [{ role: 'user', content: userContent }],
     });
@@ -70,36 +70,55 @@ async function classifyMessage(thread, newMessage) {
   }
 }
 
-function buildSystemPrompt(context) {
-  const productInfo = context.products.length > 0
-    ? `\n\nCURRENT PRODUCTS:\n${context.products.map(p => `- ${p.name}: ${p.description}`).join('\n')}`
-    : '';
+const MAX_THREAD_MESSAGES = 6;
 
+function trimThread(thread) {
+  if (!thread || thread.length <= MAX_THREAD_MESSAGES) return thread || [];
+  return thread.slice(-MAX_THREAD_MESSAGES);
+}
+
+function buildStaticSystemPrompt(context) {
   return `${context.systemPrompt}
 
 ${HUMANIZER_INSTRUCTION}
 
 KNOWLEDGE BASE:
-${context.knowledgeBase}${productInfo}`;
+${context.knowledgeBase}`;
+}
+
+function formatProductsBlock(products) {
+  if (!products || products.length === 0) return '';
+  const sorted = [...products].sort((a, b) => a.name.localeCompare(b.name));
+  return `CURRENT PRODUCTS:\n${sorted.map(p => `- ${p.name}: ${p.description}`).join('\n')}\n\n`;
 }
 
 async function draftReply(thread, newMessage, context, customerEmail) {
-  const systemPrompt = buildSystemPrompt(context);
-  const threadText = formatThreadForClassifier(thread);
+  const staticSystem = buildStaticSystemPrompt(context);
+  const productsBlock = formatProductsBlock(context.products);
+  const trimmed = trimThread(thread);
+  const threadText = formatThreadForClassifier(trimmed);
 
-  const userContent = thread.length > 0
-    ? `CONVERSATION HISTORY:\n${threadText}\n\nNEW MESSAGE FROM CUSTOMER:\n${newMessage}`
-    : newMessage;
+  const userContent = trimmed.length > 0
+    ? `${productsBlock}CONVERSATION HISTORY:\n${threadText}\n\nNEW MESSAGE FROM CUSTOMER:\n${newMessage}`
+    : `${productsBlock}${newMessage}`;
 
   const messages = [{ role: 'user', content: userContent }];
   const MAX_TOOL_TURNS = 5;
 
+  const cachedTools = toolDefinitions.map((t, i) =>
+    i === toolDefinitions.length - 1
+      ? { ...t, cache_control: { type: 'ephemeral' } }
+      : t
+  );
+
   for (let turn = 0; turn < MAX_TOOL_TURNS; turn++) {
     const response = await getClient().messages.create({
-      model: 'claude-opus-4-6',
+      model: 'claude-sonnet-4-6',
       max_tokens: 1024,
-      system: systemPrompt,
-      tools: toolDefinitions,
+      system: [
+        { type: 'text', text: staticSystem, cache_control: { type: 'ephemeral' } },
+      ],
+      tools: cachedTools,
       messages,
     });
 
@@ -136,7 +155,7 @@ async function draftReply(thread, newMessage, context, customerEmail) {
 async function draftFollowUp(customerFirstName, topic) {
   const name = customerFirstName || 'there';
   const response = await getClient().messages.create({
-    model: 'claude-opus-4-6',
+    model: 'claude-haiku-4-5',
     max_tokens: 256,
     system: `You are the Microgenix customer support agent. ${HUMANIZER_INSTRUCTION}`,
     messages: [
@@ -151,4 +170,25 @@ async function draftFollowUp(customerFirstName, topic) {
   return text ? text.text : `Hi ${name}, just checking in to make sure everything is going well. Let us know if you need anything.`;
 }
 
-module.exports = { classifyMessage, draftReply, draftFollowUp };
+async function draftEscalationAck(customerFirstName, reason) {
+  const name = customerFirstName || 'there';
+  try {
+    const response = await getClient().messages.create({
+      model: 'claude-haiku-4-5',
+      max_tokens: 150,
+      system: `You are Avery, Microgenix customer support. ${HUMANIZER_INSTRUCTION}`,
+      messages: [
+        {
+          role: 'user',
+          content: `Write a SHORT 2-sentence warm acknowledgment to ${name}. They are upset or have a sensitive issue (${reason}). Tell them a real person (Felix) is being looped in right now and will follow up directly. No solutions, no questions, no coupons. Just acknowledge and hand off.`,
+        },
+      ],
+    });
+    const text = response.content.find(b => b.type === 'text');
+    return text ? text.text : `Hey ${name}! We hear you and we're looping Felix in right now. He'll follow up with you directly.`;
+  } catch {
+    return `Hey ${name}! We hear you and we're looping Felix in right now. He'll follow up with you directly.`;
+  }
+}
+
+module.exports = { classifyMessage, draftReply, draftFollowUp, draftEscalationAck };

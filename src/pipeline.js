@@ -2,7 +2,22 @@
 
 const { getDb } = require('./db');
 const { assembleContext } = require('./knowledge');
-const { classifyMessage, draftReply } = require('./claude');
+const { classifyMessage, draftReply, draftEscalationAck } = require('./claude');
+
+const CHEAP_ACK_TOPICS = new Set(['medical', 'legal', 'complaint']);
+const ANGRY_PATTERN = /angry|upset|pissed|furious|livid|frustrat|mad|raging|human|real person/i;
+
+function shouldUseCheapAck(classification) {
+  if (CHEAP_ACK_TOPICS.has(classification.topic)) return true;
+  if (classification.escalateReason && ANGRY_PATTERN.test(classification.escalateReason)) return true;
+  return false;
+}
+
+function firstNameFromEmail(customerName, customerEmail) {
+  if (customerName) return customerName.split(/\s+/)[0];
+  if (customerEmail) return customerEmail.split('@')[0].split(/[._-]/)[0];
+  return null;
+}
 const { shouldEscalate, sendEscalationEmail } = require('./escalation');
 const { sendReply } = require('./gmail');
 const {
@@ -42,9 +57,16 @@ async function processMessage({ customerEmail, customerName, message, gmailThrea
   let replied = false;
   let escalated = false;
 
-  // Always draft a reply — even escalated tickets get a warm acknowledgment
+  // Draft a reply. For escalations on sensitive topics (medical/legal/anger),
+  // use a cheap Haiku acknowledgment and skip the full Sonnet+tools loop.
+  const useCheapAck = escalation.customer && shouldUseCheapAck(classification);
   try {
-    reply = await draftReply(thread, message, context, customerEmail);
+    if (useCheapAck) {
+      const firstName = firstNameFromEmail(customerName, customerEmail);
+      reply = await draftEscalationAck(firstName, escalation.customerReason || classification.topic);
+    } else {
+      reply = await draftReply(thread, message, context, customerEmail);
+    }
   } catch (err) {
     logEvent(conversation.id, 'draft_error', { error: err.message });
   }
