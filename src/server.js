@@ -90,6 +90,37 @@ app.post('/etransfer/run', async (req, res) => {
   }
 });
 
+app.post('/etransfer/test-email', async (req, res) => {
+  const to = req.query.to;
+  if (!to) {
+    res.status(400).json({ error: 'Missing ?to=email' });
+    return;
+  }
+  try {
+    const { sendEmail } = require('./gmail');
+    await sendEmail({
+      to,
+      subject: '[TEST] Microgenix e-Transfer Matcher live',
+      text: `Hi there,
+
+This is a deliverability test from the Microgenix e-Transfer Matcher.
+
+If you're reading this in your inbox (not spam, not bounced), your DNS is set up correctly:
+- SPF passes (Google Workspace authorized to send for microgenix.net)
+- DKIM passes (signature verifies against the google._domainkey TXT record)
+- DMARC passes (alignment achieved)
+
+Reply to this email if you want, no one is reading it.
+
+Warmly,
+Willow`,
+    });
+    res.json({ status: 'sent', to });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/etransfer/status', (req, res) => {
   const adminKey = process.env.ADMIN_KEY;
   if (adminKey && req.query.key !== adminKey) {
