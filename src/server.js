@@ -214,10 +214,8 @@ app.post('/chat', chatCors, async (req, res) => {
   try {
     console.log('[chat] assembleContext...');
     const context = await assembleContext(customerEmail);
-    console.log('[chat] classifyMessage...');
-    const classification = await classifyMessage(thread, message);
     console.log('[chat] draftReply...');
-    const reply = await draftReply(thread, message, context, customerEmail);
+    const reply = await draftReply(thread, message, context, customerEmail, { chatMode: true });
     console.log('[chat] done');
 
     // Store both sides in session history
@@ -229,8 +227,8 @@ app.post('/chat', chatCors, async (req, res) => {
 
     res.json({
       reply: chatReply,
-      escalated: !!(classification.escalateCustomer || classification.escalateFulfillment),
-      topic: classification.topic,
+      escalated: false,
+      topic: null,
     });
   } catch (err) {
     console.error('[chat] Error:', err.message, err.stack);

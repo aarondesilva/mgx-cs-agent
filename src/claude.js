@@ -92,8 +92,10 @@ function formatProductsBlock(products) {
   return `CURRENT PRODUCTS:\n${sorted.map(p => `- ${p.name}: ${p.description}`).join('\n')}\n\n`;
 }
 
-async function draftReply(thread, newMessage, context, customerEmail) {
-  const staticSystem = buildStaticSystemPrompt(context);
+async function draftReply(thread, newMessage, context, customerEmail, opts = {}) {
+  const staticSystem = opts.chatMode
+    ? buildStaticSystemPrompt(context) + `\n\nCHAT WIDGET MODE:\n- You only answer questions about Microgenix products, ingredients, usage, shipping, and store policies.\n- Do NOT escalate, transfer, loop in a human, or promise that anyone will follow up.\n- If the customer needs to speak with a person, has a complaint, an order issue, a refund request, a medical concern, or anything you cannot confidently answer from the knowledge base, politely ask them to email Willow at hello@microgenix.net.\n- Never mention Avery, Felix, Simon, fulfillment, or any internal team. Just point them to hello@microgenix.net.`
+    : buildStaticSystemPrompt(context);
   const productsBlock = formatProductsBlock(context.products);
   const trimmed = trimThread(thread);
   const threadText = formatThreadForClassifier(trimmed);
