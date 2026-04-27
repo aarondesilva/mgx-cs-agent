@@ -321,12 +321,19 @@ async function processOnHoldReminders() {
       const age = now - orderDate;
       const meta = Object.fromEntries((order.meta_data || []).map(m => [m.key, m.value]));
 
+      const ts = new Date().toISOString();
+
       if (age >= CANCEL_120_HR && !meta._etransfer_cancelled) {
         const tmpl = getReminderTemplate('cancel', order);
         await sendEmail({ to: order.billing.email, subject: tmpl.subject, text: tmpl.text });
         await api.put(`orders/${order.id}`, {
           status: 'cancelled',
-          meta_data: [{ key: '_etransfer_cancelled', value: new Date().toISOString() }],
+          meta_data: [
+            { key: '_etransfer_cancelled', value: ts },
+            { key: '_etransfer_reminder_3_sent', value: meta._etransfer_reminder_3_sent || 'skipped' },
+            { key: '_etransfer_reminder_2_sent', value: meta._etransfer_reminder_2_sent || 'skipped' },
+            { key: '_etransfer_reminder_1_sent', value: meta._etransfer_reminder_1_sent || 'skipped' },
+          ],
         });
         await api.post(`orders/${order.id}/notes`, {
           note: 'Auto-cancelled after 5 days, no e-Transfer received. Cancellation email sent.',
@@ -340,7 +347,11 @@ async function processOnHoldReminders() {
         const tmpl = getReminderTemplate('r3', order);
         await sendEmail({ to: order.billing.email, subject: tmpl.subject, text: tmpl.text });
         await api.put(`orders/${order.id}`, {
-          meta_data: [{ key: '_etransfer_reminder_3_sent', value: new Date().toISOString() }],
+          meta_data: [
+            { key: '_etransfer_reminder_3_sent', value: ts },
+            { key: '_etransfer_reminder_2_sent', value: meta._etransfer_reminder_2_sent || 'skipped' },
+            { key: '_etransfer_reminder_1_sent', value: meta._etransfer_reminder_1_sent || 'skipped' },
+          ],
         });
         console.log(`[etransfer] Reminder #3 sent for order #${order.id}`);
         continue;
@@ -350,7 +361,10 @@ async function processOnHoldReminders() {
         const tmpl = getReminderTemplate('r2', order);
         await sendEmail({ to: order.billing.email, subject: tmpl.subject, text: tmpl.text });
         await api.put(`orders/${order.id}`, {
-          meta_data: [{ key: '_etransfer_reminder_2_sent', value: new Date().toISOString() }],
+          meta_data: [
+            { key: '_etransfer_reminder_2_sent', value: ts },
+            { key: '_etransfer_reminder_1_sent', value: meta._etransfer_reminder_1_sent || 'skipped' },
+          ],
         });
         console.log(`[etransfer] Reminder #2 sent for order #${order.id}`);
         continue;
@@ -360,7 +374,7 @@ async function processOnHoldReminders() {
         const tmpl = getReminderTemplate('r1', order);
         await sendEmail({ to: order.billing.email, subject: tmpl.subject, text: tmpl.text });
         await api.put(`orders/${order.id}`, {
-          meta_data: [{ key: '_etransfer_reminder_1_sent', value: new Date().toISOString() }],
+          meta_data: [{ key: '_etransfer_reminder_1_sent', value: ts }],
         });
         console.log(`[etransfer] Reminder #1 sent for order #${order.id}`);
         continue;
