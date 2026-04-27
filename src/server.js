@@ -8,6 +8,7 @@ const { assembleContext } = require('./knowledge');
 const { classifyMessage, draftReply } = require('./claude');
 const { getDb } = require('./db');
 const { sendWeeklyReport } = require('./analytics');
+const etransfer = require('./etransfer');
 
 const app = express();
 app.use(express.json());
@@ -36,6 +37,72 @@ app.get('/widget/logo.png', cors(), (req, res) => {
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', ts: new Date().toISOString() });
+});
+
+app.get('/oauth/etransfer/connect', (req, res) => {
+  const adminKey = process.env.ADMIN_KEY;
+  if (adminKey && req.query.key !== adminKey) {
+    res.status(401).send('Unauthorized. Append ?key=YOUR_ADMIN_KEY');
+    return;
+  }
+  try {
+    const url = etransfer.getAuthUrl();
+    res.redirect(url);
+  } catch (err) {
+    res.status(500).send(`OAuth init error: ${err.message}`);
+  }
+});
+
+app.get('/oauth/etransfer/callback', async (req, res) => {
+  const { code, error } = req.query;
+  if (error) {
+    res.status(400).send(`OAuth error: ${error}`);
+    return;
+  }
+  if (!code) {
+    res.status(400).send('Missing code parameter.');
+    return;
+  }
+  try {
+    await etransfer.exchangeCodeForToken(code);
+    res.send(`<html><body style="font-family:system-ui;padding:40px;max-width:600px;margin:0 auto;">
+      <h1>Connected.</h1>
+      <p>The Microgenix Payment Matcher is now reading <code>abcpayments1@gmail.com</code> and matching e-Transfers to on-hold orders automatically.</p>
+      <p>You can close this tab.</p>
+    </body></html>`);
+  } catch (err) {
+    res.status(500).send(`Token exchange error: ${err.message}`);
+  }
+});
+
+app.post('/etransfer/run', async (req, res) => {
+  const adminKey = process.env.ADMIN_KEY;
+  if (adminKey && req.query.key !== adminKey) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  try {
+    await etransfer.pollETransferInbox();
+    await etransfer.processOnHoldReminders();
+    res.json({ status: 'ok' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/etransfer/status', (req, res) => {
+  const adminKey = process.env.ADMIN_KEY;
+  if (adminKey && req.query.key !== adminKey) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  const db = getDb();
+  const connected = !!etransfer.getStoredRefreshToken();
+  const processed = db.prepare('SELECT COUNT(*) as n FROM etransfer_processed_emails').get().n;
+  const matched = db.prepare("SELECT COUNT(*) as n FROM etransfer_processed_emails WHERE action = 'matched'").get().n;
+  const ambiguous = db.prepare("SELECT COUNT(*) as n FROM etransfer_processed_emails WHERE action = 'ambiguous'").get().n;
+  const noMatch = db.prepare("SELECT COUNT(*) as n FROM etransfer_processed_emails WHERE action = 'no_match'").get().n;
+  res.json({ connected, processed, matched, ambiguous, noMatch });
 });
 
 app.post('/webhook', (req, res) => {

@@ -54,6 +54,21 @@ function initDb() {
       avgResponseMs REAL DEFAULT 0,
       topTopics TEXT DEFAULT '[]'
     );
+
+    CREATE TABLE IF NOT EXISTS etransfer_tokens (
+      id INTEGER PRIMARY KEY,
+      refresh_token TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS etransfer_processed_emails (
+      message_id TEXT PRIMARY KEY,
+      amount REAL,
+      sender_name TEXT,
+      matched_order_id INTEGER,
+      action TEXT NOT NULL,
+      processed_at TEXT NOT NULL
+    );
   `);
 
   return db;

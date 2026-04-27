@@ -7,6 +7,7 @@ const { processMessage } = require('./pipeline');
 const { rollupDaily, sendWeeklyReport } = require('./analytics');
 const { draftFollowUp } = require('./claude');
 const { markFollowUpSent, logEvent } = require('./logger');
+const etransfer = require('./etransfer');
 const fs = require('fs');
 const path = require('path');
 const Anthropic = require('@anthropic-ai/sdk').default;
@@ -188,6 +189,16 @@ function startCronJobs() {
   // Weekly KB learning every Sunday at midnight
   cron.schedule('0 0 * * 0', () => {
     learnFromConversations().catch(err => console.error('[cron:learn]', err.message));
+  });
+
+  // e-Transfer inbox poll every 2 minutes
+  cron.schedule('*/2 * * * *', () => {
+    etransfer.pollETransferInbox().catch(err => console.error('[cron:etransfer-poll]', err.message));
+  });
+
+  // e-Transfer reminder/cancellation loop every 10 minutes
+  cron.schedule('*/10 * * * *', () => {
+    etransfer.processOnHoldReminders().catch(err => console.error('[cron:etransfer-reminders]', err.message));
   });
 
   console.log('[cron] All jobs started');
