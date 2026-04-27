@@ -191,14 +191,10 @@ function startCronJobs() {
     learnFromConversations().catch(err => console.error('[cron:learn]', err.message));
   });
 
-  // e-Transfer inbox poll every 2 minutes
-  cron.schedule('*/2 * * * *', () => {
-    etransfer.pollETransferInbox().catch(err => console.error('[cron:etransfer-poll]', err.message));
-  });
-
-  // e-Transfer reminder/cancellation loop every 10 minutes
-  cron.schedule('*/10 * * * *', () => {
-    etransfer.processOnHoldReminders().catch(err => console.error('[cron:etransfer-reminders]', err.message));
+  // e-Transfer poll + reminder loop, combined every 10 minutes
+  cron.schedule('*/10 * * * *', async () => {
+    try { await etransfer.pollETransferInbox(); } catch (err) { console.error('[cron:etransfer-poll]', err.message); }
+    try { await etransfer.processOnHoldReminders(); } catch (err) { console.error('[cron:etransfer-reminders]', err.message); }
   });
 
   console.log('[cron] All jobs started');
