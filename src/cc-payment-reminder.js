@@ -2,7 +2,7 @@
 
 const { getDb } = require('./db');
 const { getApi } = require('./woocommerce');
-const { sendEmail } = require('./gmail');
+const { sendBrevoEmail } = require('./brevo');
 
 const FIFTEEN_MIN_MS = 15 * 60 * 1000;
 const CC_GATEWAY_MATCH = /credit\s*\/?\s*debit|stripe|woocommerce_payments|authorize|square/i;
@@ -84,14 +84,14 @@ async function sendReminderForOrder(order, { force = false } = {}) {
 
   const { subject, text, html } = buildEmail(order);
 
-  await sendEmail({
+  await sendBrevoEmail({
     to: email,
     subject,
     text,
     html,
     fromName: 'Willow at Microgenix',
+    fromEmail: 'hello@microgenix.net',
     replyTo: 'hello@microgenix.net',
-    as: 'hello',
   });
 
   markSent(order.id, email, order.total);
