@@ -91,6 +91,7 @@ async function sendReminderForOrder(order, { force = false } = {}) {
     html,
     fromName: 'Willow at Microgenix',
     replyTo: 'hello@microgenix.net',
+    as: 'hello',
   });
 
   markSent(order.id, email, order.total);

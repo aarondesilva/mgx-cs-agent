@@ -159,8 +159,17 @@ async function sendReply(gmailThreadId, to, body) {
   });
 }
 
-async function sendEmail({ to, cc, subject, text, html, fromName, attachments, replyTo }) {
-  const gmail = getGmail();
+async function sendEmail({ to, cc, subject, text, html, fromName, attachments, replyTo, as }) {
+  let gmail;
+  let fromAddr;
+  if (as === 'hello') {
+    const { getETransferGmail } = require('./etransfer');
+    gmail = getETransferGmail();
+    fromAddr = 'hello@microgenix.net';
+  } else {
+    gmail = getGmail();
+    fromAddr = process.env.SUPPORT_EMAIL;
+  }
 
   const altBoundary = 'mgx_alt_' + Date.now();
   const mixedBoundary = 'mgx_mixed_' + Date.now();
@@ -177,7 +186,6 @@ async function sendEmail({ to, cc, subject, text, html, fromName, attachments, r
     topContentType = `text/plain; charset=utf-8`;
   }
 
-  const fromAddr = process.env.SUPPORT_EMAIL;
   const fromHeader = fromName
     ? `${fromName} <${fromAddr}>`
     : `Microgenix Support <${fromAddr}>`;

@@ -237,7 +237,8 @@ Just in case, here are the payment instructions again:
 ${instructions}
 
 Warmly,
-Willow`,
+Willow
+microgenix.net`,
     };
   }
 
@@ -255,7 +256,8 @@ Payment instructions:
 ${instructions}
 
 Warmly,
-Willow`,
+Willow
+microgenix.net`,
     };
   }
 
@@ -273,7 +275,8 @@ Payment instructions:
 ${instructions}
 
 Warmly,
-Willow`,
+Willow
+microgenix.net`,
     };
   }
 
@@ -289,7 +292,8 @@ If you'd still like to grab those products, you can place a new order at https:/
 Any questions? Just reply to this email.
 
 Warmly,
-Willow`,
+Willow
+microgenix.net`,
     };
   }
 
@@ -420,4 +424,5 @@ module.exports = {
   parseSubject,
   findMatchingOrders,
   getStoredRefreshToken,
+  getETransferGmail,
 };
