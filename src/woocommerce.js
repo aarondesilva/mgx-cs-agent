@@ -237,4 +237,4 @@ async function handleToolCall(toolName, input) {
   }
 }
 
-module.exports = { toolDefinitions, handleToolCall };
+module.exports = { toolDefinitions, handleToolCall, getApi };
