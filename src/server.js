@@ -90,6 +90,38 @@ app.post('/etransfer/run', async (req, res) => {
   }
 });
 
+app.post('/cc-reminder/run', async (req, res) => {
+  const adminKey = process.env.ADMIN_KEY;
+  if (adminKey && req.query.key !== adminKey) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  try {
+    const ccReminder = require('./cc-payment-reminder');
+    const result = await ccReminder.processPendingCcOrders();
+    res.json({ status: 'ok', ...result });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/cc-reminder/order/:id', async (req, res) => {
+  const adminKey = process.env.ADMIN_KEY;
+  if (adminKey && req.query.key !== adminKey) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  try {
+    const ccReminder = require('./cc-payment-reminder');
+    const orderId = parseInt(req.params.id, 10);
+    const force = req.query.force === '1';
+    const result = await ccReminder.processSpecificOrder(orderId, { force });
+    res.json({ status: 'ok', ...result });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/etransfer/test-email', async (req, res) => {
   const to = req.query.to;
   if (!to) {

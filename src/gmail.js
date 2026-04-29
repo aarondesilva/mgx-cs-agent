@@ -159,23 +159,35 @@ async function sendReply(gmailThreadId, to, body) {
   });
 }
 
-async function sendEmail({ to, cc, subject, text, attachments }) {
+async function sendEmail({ to, cc, subject, text, html, fromName, attachments, replyTo }) {
   const gmail = getGmail();
 
-  const boundary = 'mgx_boundary_' + Date.now();
+  const altBoundary = 'mgx_alt_' + Date.now();
   const mixedBoundary = 'mgx_mixed_' + Date.now();
 
   const hasAttachments = attachments && attachments.length > 0;
-  const topBoundary = hasAttachments ? mixedBoundary : boundary;
-  const topContentType = hasAttachments
-    ? `multipart/mixed; boundary="${mixedBoundary}"`
-    : `text/plain; charset=utf-8`;
+  const hasHtml = !!html;
+
+  let topContentType;
+  if (hasAttachments) {
+    topContentType = `multipart/mixed; boundary="${mixedBoundary}"`;
+  } else if (hasHtml) {
+    topContentType = `multipart/alternative; boundary="${altBoundary}"`;
+  } else {
+    topContentType = `text/plain; charset=utf-8`;
+  }
+
+  const fromAddr = process.env.SUPPORT_EMAIL;
+  const fromHeader = fromName
+    ? `${fromName} <${fromAddr}>`
+    : `Microgenix Support <${fromAddr}>`;
 
   const headers = [
-    `From: Microgenix Support <${process.env.SUPPORT_EMAIL}>`,
+    `From: ${fromHeader}`,
     `To: ${to}`,
   ];
   if (cc) headers.push(`Cc: ${cc}`);
+  if (replyTo) headers.push(`Reply-To: ${replyTo}`);
   headers.push(
     `Subject: ${subject}`,
     `MIME-Version: 1.0`,
@@ -184,14 +196,34 @@ async function sendEmail({ to, cc, subject, text, attachments }) {
 
   const parts = [headers.join('\r\n'), ''];
 
-  if (hasAttachments) {
-    parts.push(
-      `--${mixedBoundary}`,
+  function buildBodyPart() {
+    if (!hasHtml) {
+      return text;
+    }
+    const lines = [
+      `--${altBoundary}`,
       'Content-Type: text/plain; charset=utf-8',
       '',
       text,
       '',
-    );
+      `--${altBoundary}`,
+      'Content-Type: text/html; charset=utf-8',
+      '',
+      html,
+      '',
+      `--${altBoundary}--`,
+    ];
+    return lines.join('\r\n');
+  }
+
+  if (hasAttachments) {
+    parts.push(`--${mixedBoundary}`);
+    if (hasHtml) {
+      parts.push(`Content-Type: multipart/alternative; boundary="${altBoundary}"`, '');
+    } else {
+      parts.push('Content-Type: text/plain; charset=utf-8', '');
+    }
+    parts.push(buildBodyPart(), '');
     for (const att of attachments) {
       const base64Content = Buffer.from(att.content).toString('base64');
       parts.push(
@@ -206,7 +238,7 @@ async function sendEmail({ to, cc, subject, text, attachments }) {
     }
     parts.push(`--${mixedBoundary}--`);
   } else {
-    parts.push(text);
+    parts.push(buildBodyPart());
   }
 
   const raw = parts.join('\r\n');

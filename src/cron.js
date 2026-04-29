@@ -197,6 +197,13 @@ function startCronJobs() {
     try { await etransfer.processOnHoldReminders(); } catch (err) { console.error('[cron:etransfer-reminders]', err.message); }
   });
 
+  // CC payment follow-up — fires 15 min after a CC order stays pending
+  const ccReminder = require('./cc-payment-reminder');
+  cron.schedule('*/5 * * * *', () => {
+    ccReminder.processPendingCcOrders()
+      .catch(err => console.error('[cron:cc-reminder]', err.message));
+  });
+
   console.log('[cron] All jobs started');
 }
 
