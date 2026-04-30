@@ -165,4 +165,5 @@ module.exports = {
   processPendingCcOrders,
   processSpecificOrder,
   sendReminderForOrder,
+  buildEmail,
 };
