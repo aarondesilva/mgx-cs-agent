@@ -55,16 +55,20 @@ function buildEmail(order) {
     `Willow - Microgenix Community Lead 🍄`,
   ].join('\n');
 
+  const FONT = "Arial, Helvetica, sans-serif";
   const html = `<!doctype html>
-<html><body style="font-family:Inter,Arial,sans-serif;color:#222;font-size:15px;line-height:1.5;">
-<p>Hi ${firstName},</p>
-<p>It looks like the credit card payment for order <strong>#${order.id}</strong> didn't go through. You can pick up right where you left off and try again here:</p>
-<p style="margin:24px 0;">
-  <a href="${payUrl}" style="display:inline-block;padding:12px 22px;background:linear-gradient(90deg,#1a4971,#2980b9);color:#ffffff;text-decoration:none;border-radius:5px;font-weight:600;">Complete your payment</a>
+<html><head><meta charset="utf-8"><style>body,p,a,span,div,strong{font-family:${FONT} !important;}</style></head>
+<body style="margin:0;padding:0;font-family:${FONT};color:#222;font-size:15px;line-height:1.5;">
+<div style="font-family:${FONT};color:#222;font-size:15px;line-height:1.5;max-width:560px;margin:0 auto;padding:20px;">
+<p style="font-family:${FONT};margin:0 0 14px;">Hi ${firstName},</p>
+<p style="font-family:${FONT};margin:0 0 14px;">It looks like the credit card payment for order <strong style="font-family:${FONT};">#${order.id}</strong> didn't go through. You can pick up right where you left off and try again here:</p>
+<p style="font-family:${FONT};margin:24px 0;">
+  <a href="${payUrl}" style="font-family:${FONT};display:inline-block;padding:12px 22px;background:#2a3a72;color:#ffffff;text-decoration:none;border-radius:5px;font-weight:600;font-size:15px;">Complete your payment</a>
 </p>
-<p style="font-size:13px;color:#666;">Or paste this link in your browser:<br><a href="${payUrl}" style="color:#1a4971;">${payUrl}</a></p>
-<p>If a different card works better, that's totally fine too. And if you run into any trouble, just reply to this email and we'll help you get it sorted.</p>
-<p>Warmly,<br>Willow - Microgenix Community Lead 🍄</p>
+<p style="font-family:${FONT};margin:0 0 14px;font-size:13px;color:#666;">Or paste this link in your browser:<br><a href="${payUrl}" style="font-family:${FONT};color:#2a3a72;">${payUrl}</a></p>
+<p style="font-family:${FONT};margin:0 0 14px;">If a different card works better, that's totally fine too. And if you run into any trouble, just reply to this email and we'll help you get it sorted.</p>
+<p style="font-family:${FONT};margin:14px 0 0;">Warmly,<br>Willow - Microgenix Community Lead 🍄</p>
+</div>
 </body></html>`;
 
   return { subject, text, html };
