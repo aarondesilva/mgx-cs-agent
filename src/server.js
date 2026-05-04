@@ -402,4 +402,28 @@ app.post('/admin/send-report', async (req, res) => {
   }
 });
 
+// Admin: trigger e-Transfer weekly summary on demand. Optional ?key= guard via STATS_PASSWORD.
+// Optional ?dryRun=1 returns the rendered email without sending.
+app.post('/etransfer/summary/run', async (req, res) => {
+  const password = process.env.STATS_PASSWORD;
+  if (password && req.query.key !== password) {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+  try {
+    const summary = require('./etransfer-summary');
+    if (req.query.dryRun === '1') {
+      const { start, end } = summary.lastWeekWindow();
+      const orders = await summary.fetchPaidETransferOrders(start, end);
+      const built = summary.buildEmail(orders, start, end);
+      res.json({ window: { start, end }, count: orders.length, subject: built.subject, html: built.html });
+      return;
+    }
+    const result = await summary.sendWeeklySummary();
+    res.json({ status: 'sent', ...result });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = app;

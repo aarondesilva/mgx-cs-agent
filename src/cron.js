@@ -8,6 +8,7 @@ const { rollupDaily, sendWeeklyReport } = require('./analytics');
 const { draftFollowUp } = require('./claude');
 const { markFollowUpSent, logEvent } = require('./logger');
 const etransfer = require('./etransfer');
+const etransferSummary = require('./etransfer-summary');
 const fs = require('fs');
 const path = require('path');
 const Anthropic = require('@anthropic-ai/sdk').default;
@@ -189,6 +190,11 @@ function startCronJobs() {
   // Weekly KB learning every Sunday at midnight
   cron.schedule('0 0 * * 0', () => {
     learnFromConversations().catch(err => console.error('[cron:learn]', err.message));
+  });
+
+  // e-Transfer weekly sales summary email to Jillian, every Monday at 9am UTC
+  cron.schedule('0 9 * * 1', () => {
+    etransferSummary.sendWeeklySummary().catch(err => console.error('[cron:etransfer-summary]', err.message));
   });
 
   // e-Transfer poll + reminder loop, combined every 10 minutes
