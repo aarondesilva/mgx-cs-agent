@@ -1,7 +1,7 @@
 'use strict';
 
 const { getApi } = require('./woocommerce');
-const { sendEmail } = require('./gmail');
+const { sendBrevoEmail } = require('./brevo');
 
 const TO_EMAIL = process.env.WEEKLY_ETRANSFER_TO || 'jillian.pauline@gmail.com';
 const CC_EMAIL = process.env.WEEKLY_ETRANSFER_CC || 'tigertiger@microgenix.net';
@@ -149,15 +149,15 @@ async function sendWeeklySummary({ now = new Date(), to = TO_EMAIL, cc = CC_EMAI
   const { start, end } = lastWeekWindow(now);
   const orders = await fetchPaidETransferOrders(start, end);
   const { subject, text, html } = buildEmail(orders, start, end);
-  await sendEmail({
+  await sendBrevoEmail({
     to,
     cc,
     subject,
     text,
     html,
     fromName: 'Microgenix',
+    fromEmail: 'hello@microgenix.net',
     replyTo: 'hello@microgenix.net',
-    as: 'hello',
   });
   console.log(`[etransfer-summary] sent: count=${orders.length} window=${start.toISOString()}..${end.toISOString()} to=${to} cc=${cc}`);
   return { count: orders.length, start, end };
