@@ -419,7 +419,7 @@ app.post('/etransfer/summary/run', async (req, res) => {
       res.json({ window: { start, end }, count: orders.length, subject: built.subject, html: built.html });
       return;
     }
-    const result = await summary.sendWeeklySummary();
+    const result = await summary.sendWeeklySummary({ force: true });
     res.json({ status: 'sent', ...result });
   } catch (err) {
     res.status(500).json({ error: err.message });

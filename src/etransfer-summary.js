@@ -148,7 +148,14 @@ function buildEmail(orders, start, end) {
   return { subject, text, html };
 }
 
-async function sendWeeklySummary({ now = new Date(), to = TO_EMAIL, cc = CC_EMAIL } = {}) {
+async function sendWeeklySummary({ now = new Date(), to = TO_EMAIL, cc = CC_EMAIL, force = false } = {}) {
+  // Day-of-week guard: only proceed on Monday UTC. Use force=true for manual sends.
+  // Reason: cron is `0 9 * * 1` (Mon 9am UTC) but Railway redeploys / manual triggers
+  // have caused duplicate sends on other days. This guard ensures send only happens Mondays.
+  if (!force && now.getUTCDay() !== 1) {
+    console.log(`[etransfer-summary] skipped: today is UTC day ${now.getUTCDay()}, not Monday (1)`);
+    return { skipped: true, reason: 'not_monday', utcDay: now.getUTCDay() };
+  }
   const { start, end } = lastWeekWindow(now);
   const orders = await fetchPaidETransferOrders(start, end);
   const { subject, text, html } = buildEmail(orders, start, end);
