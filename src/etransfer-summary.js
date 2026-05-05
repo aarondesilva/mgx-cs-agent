@@ -41,6 +41,9 @@ async function fetchPaidETransferOrders(start, end) {
     page++;
   }
   return orders.filter(o => {
+    // The WC REST orders endpoint silently ignores `payment_method` query param,
+    // so enforce the e-Transfer (betpg) filter client-side.
+    if (o.payment_method !== 'betpg') return false;
     if (!o.date_paid_gmt) return false;
     const paid = new Date(o.date_paid_gmt + 'Z');
     return paid >= start && paid <= end;
