@@ -192,10 +192,12 @@ function startCronJobs() {
     learnFromConversations().catch(err => console.error('[cron:learn]', err.message));
   });
 
-  // e-Transfer weekly sales summary email to Jillian, every Monday at 9am UTC
-  cron.schedule('0 9 * * 1', () => {
-    etransferSummary.sendWeeklySummary().catch(err => console.error('[cron:etransfer-summary]', err.message));
-  });
+  // e-Transfer weekly summary to Jillian DISABLED 2026-05-11 per Aaron —
+  // was only meant to be sent once for the week, not on a recurring schedule.
+  // Manual trigger still available via POST /etransfer/summary/run if needed.
+  // cron.schedule('0 9 * * 1', () => {
+  //   etransferSummary.sendWeeklySummary().catch(err => console.error('[cron:etransfer-summary]', err.message));
+  // });
 
   // e-Transfer poll + reminder loop, combined every 10 minutes
   cron.schedule('*/10 * * * *', async () => {
