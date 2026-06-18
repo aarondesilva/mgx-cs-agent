@@ -52,23 +52,48 @@ function buildEmail(order) {
     `If a different card works better, that's totally fine too. And if you run into any trouble, just reply to this email and we'll help you get it sorted.`,
     ``,
     `Warmly,`,
-    `Willow - Microgenix Community Lead 🍄`,
+    `Willow`,
+    `Microgenix Community Lead`,
   ].join('\n');
 
+  // Tight, single-typeface palette to avoid a "spammy" look:
+  //   one text colour, one muted grey, navy only for the button + links, bold only on the button.
   const FONT = "Arial, Helvetica, sans-serif";
+  const NAVY = "#2a3b73";   // button + links only
+  const TEXT = "#333333";   // all body copy + signature
+  const MUTED = "#888888";  // helper line + footer only
+  const LOGO_URL = "https://microgenix.net/wp-content/mgx-bright/img/logo-blue.png";
   const html = `<!doctype html>
-<html><head><meta charset="utf-8"><style>body,p,a,span,div,strong{font-family:${FONT} !important;}</style></head>
-<body style="margin:0;padding:0;font-family:${FONT};color:#222;font-size:15px;line-height:1.5;">
-<div style="font-family:${FONT};color:#222;font-size:15px;line-height:1.5;max-width:560px;margin:0 auto;padding:20px;">
-<p style="font-family:${FONT};margin:0 0 14px;">Hi ${firstName},</p>
-<p style="font-family:${FONT};margin:0 0 14px;">It looks like the credit card payment for order <strong style="font-family:${FONT};">#${order.id}</strong> didn't go through. You can pick up right where you left off and try again here:</p>
-<p style="font-family:${FONT};margin:24px 0;">
-  <a href="${payUrl}" style="font-family:${FONT};display:inline-block;padding:12px 22px;background:#2a3a72;color:#ffffff;text-decoration:none;border-radius:5px;font-weight:600;font-size:15px;">Complete your payment</a>
-</p>
-<p style="font-family:${FONT};margin:0 0 14px;font-size:13px;color:#666;">Or paste this link in your browser:<br><a href="${payUrl}" style="font-family:${FONT};color:#2a3a72;">${payUrl}</a></p>
-<p style="font-family:${FONT};margin:0 0 14px;">If a different card works better, that's totally fine too. And if you run into any trouble, just reply to this email and we'll help you get it sorted.</p>
-<p style="font-family:${FONT};margin:14px 0 0;">Warmly,<br>Willow - Microgenix Community Lead 🍄</p>
-</div>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body,table,td,p,a,span,div{font-family:${FONT} !important;}</style></head>
+<body style="margin:0;padding:0;background:#f4f1ec;font-family:${FONT};color:${TEXT};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f1ec;font-family:${FONT};">
+<tr><td align="center" style="padding:24px 12px;">
+<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;background:#ffffff;border:1px solid #ececec;border-radius:12px;overflow:hidden;">
+<tr><td align="center" style="padding:30px 0 22px;border-bottom:1px solid #eeeeee;">
+<img src="${LOGO_URL}" alt="Microgenix" width="150" style="display:block;width:150px;height:auto;border:0;outline:none;">
+</td></tr>
+<tr><td style="padding:30px 34px 0;font-family:${FONT};color:${TEXT};font-size:15px;line-height:1.6;">
+<p style="font-family:${FONT};margin:0 0 16px;">Hi ${firstName},</p>
+<p style="font-family:${FONT};margin:0 0 16px;">It looks like the credit card payment for order #${order.id} didn't go through. You can pick up right where you left off and try again here:</p>
+</td></tr>
+<tr><td align="center" style="padding:8px 34px 20px;">
+<a href="${payUrl}" style="font-family:${FONT};display:inline-block;padding:14px 30px;background:${NAVY};color:#ffffff !important;text-decoration:none;border-radius:6px;font-weight:bold;font-size:15px;">Complete your payment</a>
+</td></tr>
+<tr><td style="padding:0 34px 8px;font-family:${FONT};color:${MUTED};font-size:13px;line-height:1.5;">
+Or paste this link in your browser:<br><a href="${payUrl}" style="font-family:${FONT};color:${NAVY};word-break:break-all;">${payUrl}</a>
+</td></tr>
+<tr><td style="padding:16px 34px 30px;font-family:${FONT};color:${TEXT};font-size:15px;line-height:1.6;">
+<p style="font-family:${FONT};margin:0 0 16px;">If a different card works better, that's totally fine too. And if you run into any trouble, just reply to this email and we'll help you get it sorted.</p>
+<p style="font-family:${FONT};margin:18px 0 0;">Warmly,<br>Willow<br>Microgenix Community Lead</p>
+</td></tr>
+<tr><td style="padding:18px 34px 26px;border-top:1px solid #eeeeee;font-family:${FONT};color:${MUTED};font-size:13px;line-height:1.5;text-align:center;">
+You're receiving this because you started an order at <a href="https://microgenix.net" style="font-family:${FONT};color:${MUTED};">microgenix.net</a>.<br>
+Questions? Just reply, or email <a href="mailto:hello@microgenix.net" style="font-family:${FONT};color:${MUTED};">hello@microgenix.net</a>.
+</td></tr>
+</table>
+</td></tr>
+</table>
 </body></html>`;
 
   return { subject, text, html };
