@@ -4,7 +4,7 @@ const { google } = require('googleapis');
 const { getDb } = require('./db');
 const { sendEmail } = require('./gmail');
 
-const REMINDER_30_MIN = 30 * 60 * 1000;
+const REMINDER_12_HR = 12 * 60 * 60 * 1000;
 const REMINDER_24_HR = 24 * 60 * 60 * 1000;
 const REMINDER_96_HR = 96 * 60 * 60 * 1000;
 const CANCEL_120_HR = 120 * 60 * 60 * 1000;
@@ -321,6 +321,15 @@ async function processOnHoldReminders() {
 
   for (const order of orders) {
     try {
+      // Guard: never remind (or cancel) an order that has since been paid. The
+      // matcher may have flipped it to 'processing' between fetching this list and
+      // now, so re-confirm the live status and skip anything no longer on-hold.
+      const { data: current } = await api.get(`orders/${order.id}`);
+      if (!current || current.status !== 'on-hold') {
+        console.log(`[etransfer] Order #${order.id} is now '${current ? current.status : 'missing'}', not on-hold; skipping reminder.`);
+        continue;
+      }
+
       const orderDate = new Date(order.date_created_gmt + 'Z').getTime();
       const age = now - orderDate;
       const meta = Object.fromEntries((order.meta_data || []).map(m => [m.key, m.value]));
@@ -374,7 +383,7 @@ async function processOnHoldReminders() {
         continue;
       }
 
-      if (age >= REMINDER_30_MIN && !meta._etransfer_reminder_1_sent) {
+      if (age >= REMINDER_12_HR && !meta._etransfer_reminder_1_sent) {
         const tmpl = getReminderTemplate('r1', order);
         await sendEmail({ to: order.billing.email, subject: tmpl.subject, text: tmpl.text });
         await api.put(`orders/${order.id}`, {
