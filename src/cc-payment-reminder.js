@@ -45,11 +45,11 @@ function buildEmail(order) {
   const text = [
     `Hi ${firstName},`,
     ``,
-    `It looks like the credit card payment for order #${order.id} didn't go through. You can pick up right where you left off and try again here:`,
+    `Your order #${order.id} is saved, but the payment step never finished, so nothing has been charged. You can pick up right where you left off here:`,
     ``,
     payUrl,
     ``,
-    `If a different card works better, that's totally fine too. And if you run into any trouble, just reply to this email and we'll help you get it sorted.`,
+    `If your card gave you trouble, a different one works just as well. And if something else got in the way, just reply to this email and we'll help you sort it.`,
     ``,
     `Warmly,`,
     `Willow`,
@@ -75,16 +75,16 @@ function buildEmail(order) {
 </td></tr>
 <tr><td style="padding:30px 34px 0;font-family:${FONT};color:${TEXT};font-size:15px;line-height:1.6;">
 <p style="font-family:${FONT};margin:0 0 16px;">Hi ${firstName},</p>
-<p style="font-family:${FONT};margin:0 0 16px;">It looks like the credit card payment for order #${order.id} didn't go through. You can pick up right where you left off and try again here:</p>
+<p style="font-family:${FONT};margin:0 0 16px;">Your order #${order.id} is saved, but the payment step never finished, so nothing has been charged. You can pick up right where you left off here:</p>
 </td></tr>
 <tr><td align="center" style="padding:8px 34px 20px;">
-<a href="${payUrl}" style="font-family:${FONT};display:inline-block;padding:14px 30px;background:${NAVY};color:#ffffff !important;text-decoration:none;border-radius:6px;font-weight:bold;font-size:15px;">Complete your payment</a>
+<a href="${payUrl}" style="font-family:${FONT};display:inline-block;padding:14px 30px;background:${NAVY};color:#ffffff !important;text-decoration:none;border-radius:6px;font-weight:bold;font-size:15px;">Complete your order</a>
 </td></tr>
 <tr><td style="padding:0 34px 8px;font-family:${FONT};color:${MUTED};font-size:13px;line-height:1.5;">
 Or paste this link in your browser:<br><a href="${payUrl}" style="font-family:${FONT};color:${NAVY};word-break:break-all;">${payUrl}</a>
 </td></tr>
 <tr><td style="padding:16px 34px 30px;font-family:${FONT};color:${TEXT};font-size:15px;line-height:1.6;">
-<p style="font-family:${FONT};margin:0 0 16px;">If a different card works better, that's totally fine too. And if you run into any trouble, just reply to this email and we'll help you get it sorted.</p>
+<p style="font-family:${FONT};margin:0 0 16px;">If your card gave you trouble, a different one works just as well. And if something else got in the way, just reply to this email and we'll help you sort it.</p>
 <p style="font-family:${FONT};margin:18px 0 0;">Warmly,<br>Willow<br>Microgenix Community Lead</p>
 </td></tr>
 <tr><td style="padding:18px 34px 26px;border-top:1px solid #eeeeee;font-family:${FONT};color:${MUTED};font-size:13px;line-height:1.5;text-align:center;">
