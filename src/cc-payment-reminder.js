@@ -5,6 +5,10 @@ const { getApi } = require('./woocommerce');
 const { sendBrevoEmail } = require('./brevo');
 
 const FIFTEEN_MIN_MS = 15 * 60 * 1000;
+// A paid order from the same customer this close to the unpaid one means they
+// simply re-placed it. Chasing the abandoned one gets them charged twice.
+const SIBLING_WINDOW_MS = 15 * 60 * 1000;
+const PAID_STATUSES = ['processing', 'completed'];
 const CC_GATEWAY_MATCH = /credit\s*\/?\s*debit|stripe|woocommerce_payments|authorize|square/i;
 const SITE_URL = (process.env.WOOCOMMERCE_URL || 'https://microgenix.net').replace(/\/+$/, '');
 
@@ -18,6 +22,60 @@ function ensureSchema() {
       total      TEXT
     )
   `).run();
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS cc_reminder_suppressed (
+      order_id      INTEGER PRIMARY KEY,
+      suppressed_at TEXT NOT NULL,
+      reason        TEXT NOT NULL,
+      detail        TEXT
+    )
+  `).run();
+}
+
+function alreadySuppressed(orderId) {
+  const db = getDb();
+  return !!db.prepare('SELECT 1 FROM cc_reminder_suppressed WHERE order_id = ?').get(orderId);
+}
+
+function markSuppressed(orderId, reason, detail) {
+  const db = getDb();
+  db.prepare(`
+    INSERT OR IGNORE INTO cc_reminder_suppressed (order_id, suppressed_at, reason, detail)
+    VALUES (?, ?, ?, ?)
+  `).run(orderId, new Date().toISOString(), reason, detail || null);
+}
+
+/**
+ * Did this customer already pay for a different order placed around the same time?
+ * Card checkouts that bounce get re-placed by the customer, and the abandoned
+ * original stays pending. Reminding them then makes them pay twice for one order
+ * (Amanda Brock, #67277 + #67278, 2026-08-20). Returns the paid order or null.
+ */
+async function findRecentPaidSibling(order) {
+  const createdMs = new Date(order.date_created_gmt + 'Z').getTime();
+  if (!Number.isFinite(createdMs)) return null;
+
+  const email = ((order.billing && order.billing.email) || '').trim().toLowerCase();
+  const params = {
+    after: new Date(createdMs - SIBLING_WINDOW_MS).toISOString(),
+    per_page: 20,
+  };
+  if (order.customer_id) params.customer = order.customer_id;
+  else if (email) params.search = email;
+  else return null;
+
+  const { data: candidates } = await getApi().get('orders', params);
+
+  return (candidates || []).find(c => {
+    if (c.id === order.id) return false;
+    if (!PAID_STATUSES.includes(c.status)) return false;
+    if (!c.date_paid && !c.date_paid_gmt) return false;
+    if (email) {
+      const other = ((c.billing && c.billing.email) || '').trim().toLowerCase();
+      if (other && other !== email) return false;
+    }
+    return true;
+  }) || null;
 }
 
 function alreadySent(orderId) {
@@ -111,6 +169,31 @@ async function sendReminderForOrder(order, { force = false } = {}) {
     return { skipped: 'no_email', orderId: order.id };
   }
 
+  if (!force) {
+    if (alreadySuppressed(order.id)) {
+      return { skipped: 'recent_paid_order', orderId: order.id };
+    }
+    let sibling = null;
+    try {
+      sibling = await findRecentPaidSibling(order);
+    } catch (err) {
+      console.warn(`[cc-reminder] sibling check failed for #${order.id}:`, err.message);
+    }
+    if (sibling) {
+      markSuppressed(order.id, 'recent_paid_order', `paid #${sibling.id}`);
+      console.log(`[cc-reminder] suppressed → order #${order.id}: customer already paid #${sibling.id}`);
+      try {
+        await getApi().post(`orders/${order.id}/notes`, {
+          note: `CC payment follow-up SUPPRESSED. Customer already paid order #${sibling.id}, placed within 15 minutes of this one, so this looks like the abandoned first attempt. Reminding them here would charge them twice.`,
+          customer_note: false,
+        });
+      } catch (err) {
+        console.warn(`[cc-reminder] suppress-note failed for #${order.id}:`, err.message);
+      }
+      return { skipped: 'recent_paid_order', orderId: order.id, paidOrderId: sibling.id };
+    }
+  }
+
   const { subject, text, html } = buildEmail(order);
 
   await sendBrevoEmail({
@@ -188,6 +271,7 @@ async function processPendingCcOrders() {
 
 module.exports = {
   processPendingCcOrders,
+  findRecentPaidSibling,
   processSpecificOrder,
   sendReminderForOrder,
   buildEmail,
