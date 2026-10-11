@@ -9,6 +9,10 @@ const FIFTEEN_MIN_MS = 15 * 60 * 1000;
 // simply re-placed it. Chasing the abandoned one gets them charged twice.
 const SIBLING_WINDOW_MS = 15 * 60 * 1000;
 const PAID_STATUSES = ['processing', 'completed'];
+// Two or more unpaid orders from one email inside a day is a card being retried, not a lost
+// connection (Nadia Ramsey #67990 + #67991, 2026-09-07). Same rule as mgx-payment-recovery.php.
+const VELOCITY_WINDOW_MS = 24 * 60 * 60 * 1000;
+const UNPAID_STATUSES = ['pending', 'failed'];
 const CC_GATEWAY_MATCH = /credit\s*\/?\s*debit|stripe|woocommerce_payments|authorize|square/i;
 const SITE_URL = (process.env.WOOCOMMERCE_URL || 'https://microgenix.net').replace(/\/+$/, '');
 
@@ -75,6 +79,35 @@ async function findRecentPaidSibling(order) {
       if (other && other !== email) return false;
     }
     return true;
+  }) || null;
+}
+
+/**
+ * Another still-unpaid order from the same billing email within 24h either side of this one,
+ * else null. Mirrors mgx_pr_pending_sibling() on the site so all three recovery touches agree.
+ * Kill switch: CC_REMINDER_VELOCITY_GUARD=0
+ */
+async function findPendingSibling(order) {
+  if (process.env.CC_REMINDER_VELOCITY_GUARD === '0') return null;
+  const createdMs = new Date(order.date_created_gmt + 'Z').getTime();
+  if (!Number.isFinite(createdMs)) return null;
+  const email = ((order.billing && order.billing.email) || '').trim().toLowerCase();
+  if (!email) return null;
+  const statuses = (process.env.CC_REMINDER_TEST_STATUSES || UNPAID_STATUSES.join(',')).split(',');
+
+  const { data: candidates } = await getApi().get('orders', {
+    search: email,
+    status: statuses.join(','),
+    after: new Date(createdMs - VELOCITY_WINDOW_MS).toISOString(),
+    before: new Date(createdMs + VELOCITY_WINDOW_MS).toISOString(),
+    per_page: 20,
+  });
+
+  return (candidates || []).find(c => {
+    if (c.id === order.id) return false;
+    if (!statuses.includes(c.status)) return false;
+    const other = ((c.billing && c.billing.email) || '').trim().toLowerCase();
+    return other === email;
   }) || null;
 }
 
@@ -192,6 +225,26 @@ async function sendReminderForOrder(order, { force = false } = {}) {
       }
       return { skipped: 'recent_paid_order', orderId: order.id, paidOrderId: sibling.id };
     }
+
+    let pending = null;
+    try {
+      pending = await findPendingSibling(order);
+    } catch (err) {
+      console.warn(`[cc-reminder] velocity check failed for #${order.id}:`, err.message);
+    }
+    if (pending) {
+      markSuppressed(order.id, 'velocity', `unpaid #${pending.id}`);
+      console.log(`[cc-reminder] suppressed → order #${order.id}: #${pending.id} from the same email is also unpaid`);
+      try {
+        await getApi().post(`orders/${order.id}/notes`, {
+          note: `CC payment follow-up SUPPRESSED. Order #${pending.id} from the same email is also unpaid within 24 hours, so this customer has 2 or more unpaid orders open. Recovery is not sent for repeat unpaid attempts. Review manually before chasing.`,
+          customer_note: false,
+        });
+      } catch (err) {
+        console.warn(`[cc-reminder] suppress-note failed for #${order.id}:`, err.message);
+      }
+      return { skipped: 'velocity', orderId: order.id, unpaidOrderId: pending.id };
+    }
   }
 
   const { subject, text, html } = buildEmail(order);
@@ -272,6 +325,7 @@ async function processPendingCcOrders() {
 module.exports = {
   processPendingCcOrders,
   findRecentPaidSibling,
+  findPendingSibling,
   processSpecificOrder,
   sendReminderForOrder,
   buildEmail,
